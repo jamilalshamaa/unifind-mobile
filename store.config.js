@@ -17,8 +17,8 @@
 // Interim URLs: the Terms page holds the privacy policy (section 2) and the
 // contact address. Replace both with dedicated pages before public review.
 const TERMS_URL = 'https://unifind.online/en/terms-conditions';
-const PRIVACY_URL = 'https://unifind.online/en/terms-conditions';
-const SUPPORT_URL = 'https://unifind.online/en/terms-conditions';
+const PRIVACY_URL = 'https://unifind.online/en/privacy';
+const SUPPORT_URL = 'https://unifind.online/en/support';
 const MARKETING_URL = 'https://unifind.online';
 
 function required(name) {
