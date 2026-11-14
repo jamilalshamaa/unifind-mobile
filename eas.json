@@ -55,7 +55,7 @@
       "android": {
         "serviceAccountKeyPath": "$GOOGLE_PLAY_KEY_PATH",
         "track": "internal",
-        "releaseStatus": "draft"
+        "releaseStatus": "completed"
       }
     }
   }
