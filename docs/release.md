@@ -11,10 +11,10 @@ this app only.
 - Gate 2 (listed): the listing text and the graphics are ready. The privacy, data safety and age rating answers are not done.
 - Gate 3 (submitted): blocked. See [Blockers before public review](#blockers-before-public-review).
 
-> **Staging only.** No production backend exists yet. The `production` build
-> profile of `eas.json` uses the STAGING URLs and the development Auth0 tenant.
-> Use it for TestFlight and the Play internal track only. Never send this
-> build to store review. Change the URLs first (issues #1 and #2).
+> **Production backend.** The `production` build profile uses the production
+> Node API (`https://api.unifind.online/api`) and the production auth service
+> (`https://auth.unifind.online`). The `preview` profile uses staging. Both use
+> the Auth0 tenant `dev-gim0725gfieuvjxt`, which serves production too.
 
 ## App facts
 
@@ -53,12 +53,12 @@ this app only.
 Expo writes these values into the JavaScript bundle at build time. A change
 needs a new build.
 
-| Variable | `preview` and `production` now | Note |
+| Variable | Value | Note |
 | --- | --- | --- |
-| `EXPO_PUBLIC_NODE_API_URL` | `https://api-stg.unifind-lb.org/api` | Staging. Change for public review (#1). |
+| `EXPO_PUBLIC_NODE_API_URL` | `https://api.unifind.online/api` | Production. `preview` uses `https://api-stg.unifind-lb.org/api`. |
 | `EXPO_PUBLIC_STRAPI_API_URL` | `https://cms.unifind.online` | The CMS catalog. |
-| `EXPO_PUBLIC_AUTH_URL` | `https://auth-stg.unifind-lb.org` | Staging auth broker. Change for public review (#1). |
-| `EXPO_PUBLIC_AUTH0_DOMAIN` | `dev-gim0725gfieuvjxt.us.auth0.com` | Development tenant (#2). |
+| `EXPO_PUBLIC_AUTH_URL` | `https://auth.unifind.online` | Production auth service. `preview` uses `https://auth-stg.unifind-lb.org`. |
+| `EXPO_PUBLIC_AUTH0_DOMAIN` | `dev-gim0725gfieuvjxt.us.auth0.com` | This tenant serves production and staging. |
 | `EXPO_PUBLIC_AUTH0_CLIENT_ID` | `lx7YKrGuk3trDoIhNESkkbxqseU7Nbpr` | Public client ID, not a secret. |
 | `EXPO_PUBLIC_AUTH0_AUDIENCE` | `https://dev-gim0725gfieuvjxt.us.auth0.com/api/v2/` | Causes the consent screen (#4). |
 | `EXPO_PUBLIC_APP_NAME` | `UniFind` | |
