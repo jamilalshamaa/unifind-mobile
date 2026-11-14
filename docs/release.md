@@ -60,7 +60,7 @@ needs a new build.
 | `EXPO_PUBLIC_AUTH_URL` | `https://auth.unifind.online` | Production auth service. `preview` uses `https://auth-stg.unifind-lb.org`. |
 | `EXPO_PUBLIC_AUTH0_DOMAIN` | `dev-gim0725gfieuvjxt.us.auth0.com` | This tenant serves production and staging. |
 | `EXPO_PUBLIC_AUTH0_CLIENT_ID` | `lx7YKrGuk3trDoIhNESkkbxqseU7Nbpr` | Public client ID, not a secret. |
-| `EXPO_PUBLIC_AUTH0_AUDIENCE` | `https://dev-gim0725gfieuvjxt.us.auth0.com/api/v2/` | Causes the consent screen (#4). |
+| `EXPO_PUBLIC_AUTH0_AUDIENCE` | `https://api.unifind.online/` | The UniFind_API audience. Auth0 skips the consent screen for it (#4). |
 | `EXPO_PUBLIC_APP_NAME` | `UniFind` | |
 | `EXPO_PUBLIC_DEFAULT_LANG` | `en` | |
 | `EXPO_PUBLIC_DEFAULT_THEME` | `system` | |
