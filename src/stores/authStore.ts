@@ -97,7 +97,7 @@ function buildUser(payload: Record<string, unknown>): AuthUser {
 }
 
 // ─── Saved profile (display fields only) ─────────────────────────────────────
-// The access token (audience /api/v2/) carries no email/name claims, so after
+// The access token (audience UniFind_API) carries no email/name claims, so after
 // an app restart a new account (nothing in Node user info yet) had a header
 // that said just "Profile". Save the display fields at sign-in; never secrets.
 const USER_KEY = "uf.user";

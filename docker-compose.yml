@@ -42,7 +42,7 @@ services:
       # exchange — the confidential client's secret never touches the app).
       - EXPO_PUBLIC_AUTH0_DOMAIN=${EXPO_PUBLIC_AUTH0_DOMAIN:-dev-gim0725gfieuvjxt.us.auth0.com}
       - EXPO_PUBLIC_AUTH0_CLIENT_ID=${EXPO_PUBLIC_AUTH0_CLIENT_ID:-lx7YKrGuk3trDoIhNESkkbxqseU7Nbpr}
-      - EXPO_PUBLIC_AUTH0_AUDIENCE=${EXPO_PUBLIC_AUTH0_AUDIENCE:-https://dev-gim0725gfieuvjxt.us.auth0.com/api/v2/}
+      - EXPO_PUBLIC_AUTH0_AUDIENCE=${EXPO_PUBLIC_AUTH0_AUDIENCE:-https://api.unifind.online/}
       - EXPO_PUBLIC_AUTH_URL=${EXPO_PUBLIC_AUTH_URL:-https://auth-stg.unifind-lb.org}
       - EXPO_PUBLIC_APP_NAME=UniFind
       - EXPO_PUBLIC_DEFAULT_LANG=en
