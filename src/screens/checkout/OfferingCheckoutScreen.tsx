@@ -15,8 +15,11 @@
  *   - Pay Now → paymentApi.getWhishUrl → opens in-app WebView (Modal).
  *   - Loading skeleton, error state, already-paid guard.
  *
+ * Layout: content in ContentColumn (centered on tablet/web); KeyboardSafeScrollView
+ * keeps the notes and promo inputs above the keyboard; the pinned pay bar pads
+ * for the home indicator.
+ *
  * §2 changes:
- *   - mb-1 below breadcrumb, mt-1 above session summary.
  *   - already-paid state → EmptyState-pattern (CheckCircle, colors.secondary) §S4.
  *   - brand import removed; GradientView uses colors.primary + colors.secondary tokens.
  *
@@ -29,7 +32,8 @@
  */
 
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { CheckCircle } from "lucide-react-native";
 import { Text } from "@/components/ui/text";
@@ -43,6 +47,8 @@ import {
 } from "@/components/ui/form-control";
 import { ScreenContainer } from "@/components/shared/ScreenContainer";
 import { AppHeader } from "@/components/shared/AppHeader";
+import { ContentColumn, NARROW_MAX_WIDTH } from "@/components/shared/ContentColumn";
+import { KeyboardSafeScrollView } from "@/components/shared/KeyboardSafeScrollView";
 import { GradientView } from "@/components/shared/GradientView";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
@@ -67,8 +73,12 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function OfferingCheckoutScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
   const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const align = isRtl ? "text-right" : "";
+  // Pinned pay bar = 12 top + 48 button + bottom inset (min 12) — keep the last card above it.
+  const payBarBottom = Math.max(insets.bottom, 12);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const userId = useAuthStore((s) => s.user?.userID);
   const { open: openSignIn } = useSignInSheet();
@@ -170,7 +180,10 @@ export default function OfferingCheckoutScreen() {
     return (
       <ScreenContainer>
         <AppHeader title={t("checkoutTitle")} showBack />
-        <View className="flex-1 items-center justify-center px-8 gap-4">
+        <ContentColumn
+          maxWidth={NARROW_MAX_WIDTH}
+          className="flex-1 items-center justify-center px-8 gap-4"
+        >
           <CheckCircle size={72} color={colors.secondary} strokeWidth={1.5} />
           <Heading size="md" className="text-foreground text-center">
             {t("alreadyPaid")}
@@ -182,8 +195,9 @@ export default function OfferingCheckoutScreen() {
             label={t("goToBookings")}
             action="primary"
             onPress={() => router.replace("/(main)/(tabs)/profile" as never)}
+            className="w-full"
           />
-        </View>
+        </ContentColumn>
       </ScreenContainer>
     );
   }
@@ -192,12 +206,15 @@ export default function OfferingCheckoutScreen() {
     return (
       <ScreenContainer>
         <AppHeader title={t("check_out_summary")} showBack />
-        <View className="flex-1 items-center justify-center gap-4 p-8">
+        <ContentColumn
+          maxWidth={NARROW_MAX_WIDTH}
+          className="flex-1 items-center justify-center gap-4 p-8"
+        >
           <Text className="text-destructive text-center">
             {error ?? t("notFound")}
           </Text>
           <Button label={t("common.retry")} onPress={load} action="primary" />
-        </View>
+        </ContentColumn>
       </ScreenContainer>
     );
   }
@@ -215,94 +232,97 @@ export default function OfferingCheckoutScreen() {
         onClose={handleWebViewClose}
       />
 
-      <ScrollView
+      <KeyboardSafeScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: PAYMENTS_ENABLED ? 120 : 60, gap: 16 }}
-        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          padding: 16,
+          paddingBottom: PAYMENTS_ENABLED ? 72 + payBarBottom + 16 : 16 + insets.bottom + 24,
+        }}
       >
-        {/* Breadcrumb — §2: mb-1 below */}
-        <Text className="text-xs text-muted-foreground mb-1">
-          {t("home")} › {t("offering")} › {t("checkout")}
-        </Text>
+        <ContentColumn className="gap-4">
+          {/* Breadcrumb — the separator points the reading direction */}
+          <Text className={`text-xs text-muted-foreground ${align}`} numberOfLines={1}>
+            {[t("home"), t("offering"), t("checkout")].join(isRtl ? " ‹ " : " › ")}
+          </Text>
 
-        {/* Session summary — §2: mt-1 above */}
-        <View className="mt-1">
+          {/* Session summary */}
           <CheckoutSessionSummary booking={booking} imageUrl={imageUrl} />
-        </View>
 
-        {/* Notes textarea */}
-        <View className="bg-card rounded-2xl border border-border p-4 gap-2">
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText className="text-sm font-semibold text-foreground">
-                {t("questions_booking")}
-              </FormControlLabelText>
-            </FormControlLabel>
-            <Textarea>
-              <TextareaInput
-                value={notes}
-                onChangeText={setNotes}
-                placeholder={t("question")}
-                numberOfLines={4}
-              />
-            </Textarea>
-          </FormControl>
-        </View>
+          {/* Notes textarea */}
+          <View className="bg-card rounded-2xl border border-border p-4 gap-2">
+            <FormControl>
+              <FormControlLabel>
+                <FormControlLabelText className={`text-sm font-semibold text-foreground ${align}`}>
+                  {t("questions_booking")}
+                </FormControlLabelText>
+              </FormControlLabel>
+              <Textarea>
+                <TextareaInput
+                  value={notes}
+                  onChangeText={setNotes}
+                  placeholder={t("question")}
+                  numberOfLines={4}
+                  style={{ textAlign: isRtl ? "right" : "left" }}
+                />
+              </Textarea>
+            </FormControl>
+          </View>
 
-        {/* Promo code block — bookingRef from route params (getById may not include it) */}
-        <PromoBlock
-          booking={booking}
-          bookingRef={bookingRef}
-          localPromo={localPromo}
-          onPromoApplied={(promo) => {
-            setLocalPromo(promo);
-            setOverrideFinalPrice(null);
-          }}
-          onPromoRemoved={(newFinalPrice) => {
-            setLocalPromo(null);
-            setOverrideFinalPrice(newFinalPrice);
-            // Server is the source of truth for the booking after a promo change.
-            void checkoutQuery.refetch();
-          }}
-        />
+          {/* Promo code block — bookingRef from route params (getById may not include it) */}
+          <PromoBlock
+            booking={booking}
+            bookingRef={bookingRef}
+            localPromo={localPromo}
+            onPromoApplied={(promo) => {
+              setLocalPromo(promo);
+              setOverrideFinalPrice(null);
+            }}
+            onPromoRemoved={(newFinalPrice) => {
+              setLocalPromo(null);
+              setOverrideFinalPrice(newFinalPrice);
+              // Server is the source of truth for the booking after a promo change.
+              void checkoutQuery.refetch();
+            }}
+          />
 
-        {/* Price breakdown */}
-        <PriceBreakdown
-          booking={booking}
-          localPromo={localPromo}
-          overrideFinalPrice={overrideFinalPrice}
-        />
+          {/* Price breakdown */}
+          <PriceBreakdown
+            booking={booking}
+            localPromo={localPromo}
+            overrideFinalPrice={overrideFinalPrice}
+          />
 
-        {/* Payment method + Pay Now */}
-        <View className="bg-card rounded-2xl border border-border p-4 gap-4">
-          {PAYMENTS_ENABLED ? (
-            <>
-              <PaymentMethodTabs selected="whish" />
-            </>
-          ) : (
-            <PaymentsUnavailableNotice />
-          )}
-        </View>
-      </ScrollView>
+          {/* Payment method + Pay Now */}
+          <View className="bg-card rounded-2xl border border-border p-4 gap-4">
+            {PAYMENTS_ENABLED ? <PaymentMethodTabs selected="whish" /> : <PaymentsUnavailableNotice />}
+          </View>
+        </ContentColumn>
+      </KeyboardSafeScrollView>
 
       {/* DESIGN-03: Pay Now pinned to the bottom (review-and-pay pattern; Mobbin refs:
           Airbnb https://mobbin.com/screens/9a6b2272-a314-4e9c-b53f-7bccaad4758a ,
           Swiggy https://mobbin.com/screens/04972635-b301-49c0-b49c-d1e86dcf1743). */}
       {PAYMENTS_ENABLED && (
-        <View testID="checkout-pay-bar" className="absolute left-0 right-0 bottom-0 border-t border-border bg-background px-4 pt-3 pb-6">
-          <GradientView
-            colors={[colors.primary, colors.secondary]}
-            style={{ borderRadius: 14 }}
-          >
-            <Button
-              label={t("pay_now")}
-              onPress={handlePay}
-              disabled={paying}
-              variant="solid"
-              className="bg-transparent w-full"
-              testID="checkout-pay-now"
-            />
-          </GradientView>
+        <View
+          testID="checkout-pay-bar"
+          className="absolute left-0 right-0 bottom-0 border-t border-border bg-background px-4 pt-3"
+          style={{ paddingBottom: payBarBottom }}
+        >
+          <ContentColumn>
+            <GradientView
+              colors={[colors.primary, colors.secondary]}
+              style={{ borderRadius: 14 }}
+            >
+              <Button
+                label={t("pay_now")}
+                onPress={handlePay}
+                disabled={paying}
+                variant="solid"
+                className="bg-transparent w-full"
+                testID="checkout-pay-now"
+              />
+            </GradientView>
+          </ContentColumn>
         </View>
       )}
     </ScreenContainer>

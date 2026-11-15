@@ -3,7 +3,8 @@
  *
  * All content comes from the `terms.*` i18n keys (sections 1–5 + conclusion).
  * No API calls; purely presentational.
- * RTL-safe; light-mode tokens only.
+ * RTL-safe (native layout stays LTR, so rows and accents are mirrored by
+ * hand); light-mode tokens only. Content sits in the centered ContentColumn.
  */
 
 import { ScrollView, View } from "react-native";
@@ -12,14 +13,18 @@ import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
 import { Divider } from "@/components/ui/divider";
 import { AppHeader } from "@/components/shared/AppHeader";
+import { ContentColumn } from "@/components/shared/ContentColumn";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 
 // ─── Re-usable renderers ─────────────────────────────────────────────────────
 
 function SectionTitle({ text }: { text: string }) {
+  const { isRtl } = useCustomTranslation();
   return (
-    <View className="border-l-4 border-secondary pl-3 mt-6 mb-2">
-      <Heading size="md" className="text-primary font-bold">
+    <View
+      className={`border-secondary mt-6 mb-2 ${isRtl ? "border-r-4 pr-3" : "border-l-4 pl-3"}`}
+    >
+      <Heading size="md" className={`text-primary font-bold ${isRtl ? "text-right" : ""}`}>
         {text}
       </Heading>
     </View>
@@ -27,26 +32,33 @@ function SectionTitle({ text }: { text: string }) {
 }
 
 function SubTitle({ text }: { text: string }) {
+  const { isRtl } = useCustomTranslation();
   return (
-    <Heading size="sm" className="text-primary font-semibold mt-4 mb-1">
+    <Heading size="sm" className={`text-primary font-semibold mt-4 mb-1 ${isRtl ? "text-right" : ""}`}>
       {text}
     </Heading>
   );
 }
 
 function Para({ text }: { text: string }) {
+  const { isRtl } = useCustomTranslation();
   if (!text) return null;
   return (
-    <Text className="text-foreground text-sm leading-relaxed mb-1">{text}</Text>
+    <Text className={`text-foreground text-sm leading-relaxed mb-1 ${isRtl ? "text-right" : ""}`}>
+      {text}
+    </Text>
   );
 }
 
 function Bullet({ text }: { text: string }) {
+  const { isRtl } = useCustomTranslation();
   if (!text) return null;
   return (
-    <View className="flex-row gap-2 mb-1 ps-2">
-      <Text className="text-muted-foreground text-sm mt-0.5">•</Text>
-      <Text className="text-foreground text-sm leading-relaxed flex-1">{text}</Text>
+    <View className={`gap-2 mb-1 ${isRtl ? "flex-row-reverse pr-2" : "flex-row pl-2"}`}>
+      <Text className="text-muted-foreground text-sm leading-relaxed">•</Text>
+      <Text className={`text-foreground text-sm leading-relaxed flex-1 ${isRtl ? "text-right" : ""}`}>
+        {text}
+      </Text>
     </View>
   );
 }
@@ -60,142 +72,143 @@ export default function TermsScreen() {
     <SafeAreaView edges={["top"]} className="flex-1 bg-background">
       <AppHeader title={t("terms.heading")} showBack />
       <ScrollView
-        className="px-4"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
       >
-        {/* ── Section 1: General Terms ──────────────────────────────────── */}
-        <SectionTitle text={t("terms.section1.title")} />
-        <Para text={t("terms.section1.intro")} />
+        <ContentColumn>
+          {/* ── Section 1: General Terms ──────────────────────────────────── */}
+          <SectionTitle text={t("terms.section1.title")} />
+          <Para text={t("terms.section1.intro")} />
 
-        <SubTitle text={t("terms.section1.sub1.title")} />
-        <Para text={t("terms.section1.sub1.text")} />
-        <Bullet text={t("terms.section1.sub1.bullet1")} />
-        <Bullet text={t("terms.section1.sub1.bullet2")} />
-        <Bullet text={t("terms.section1.sub1.bullet3")} />
+          <SubTitle text={t("terms.section1.sub1.title")} />
+          <Para text={t("terms.section1.sub1.text")} />
+          <Bullet text={t("terms.section1.sub1.bullet1")} />
+          <Bullet text={t("terms.section1.sub1.bullet2")} />
+          <Bullet text={t("terms.section1.sub1.bullet3")} />
 
-        <SubTitle text={t("terms.section1.sub2.title")} />
-        <Bullet text={t("terms.section1.sub2.bullet1")} />
-        <Bullet text={t("terms.section1.sub2.bullet2")} />
-        <Bullet text={t("terms.section1.sub2.bullet3")} />
+          <SubTitle text={t("terms.section1.sub2.title")} />
+          <Bullet text={t("terms.section1.sub2.bullet1")} />
+          <Bullet text={t("terms.section1.sub2.bullet2")} />
+          <Bullet text={t("terms.section1.sub2.bullet3")} />
 
-        <SubTitle text={t("terms.section1.sub3.title")} />
-        <Para text={t("terms.section1.sub3.text")} />
+          <SubTitle text={t("terms.section1.sub3.title")} />
+          <Para text={t("terms.section1.sub3.text")} />
 
-        <Divider className="mt-6" />
+          <Divider className="mt-6" />
 
-        {/* ── Section 2: Privacy Policy ──────────────────────────────────── */}
-        <SectionTitle text={t("terms.section2.title")} />
+          {/* ── Section 2: Privacy Policy ──────────────────────────────────── */}
+          <SectionTitle text={t("terms.section2.title")} />
 
-        <SubTitle text={t("terms.section2.sub1.title")} />
-        <Para text={t("terms.section2.sub1.text")} />
-        <Bullet text={t("terms.section2.sub1.item1")} />
-        <Bullet text={t("terms.section2.sub1.item2")} />
-        <Bullet text={t("terms.section2.sub1.item3")} />
-        <Bullet text={t("terms.section2.sub1.item4")} />
-        <Bullet text={t("terms.section2.sub1.item5")} />
-        <Bullet text={t("terms.section2.sub1.item6")} />
+          <SubTitle text={t("terms.section2.sub1.title")} />
+          <Para text={t("terms.section2.sub1.text")} />
+          <Bullet text={t("terms.section2.sub1.item1")} />
+          <Bullet text={t("terms.section2.sub1.item2")} />
+          <Bullet text={t("terms.section2.sub1.item3")} />
+          <Bullet text={t("terms.section2.sub1.item4")} />
+          <Bullet text={t("terms.section2.sub1.item5")} />
+          <Bullet text={t("terms.section2.sub1.item6")} />
 
-        <SubTitle text={t("terms.section2.sub2.title")} />
-        <Para text={t("terms.section2.sub2.text")} />
-        <Bullet text={t("terms.section2.sub2.item1")} />
-        <Bullet text={t("terms.section2.sub2.item2")} />
-        <Bullet text={t("terms.section2.sub2.item3")} />
-        <Bullet text={t("terms.section2.sub2.item4")} />
-        <Bullet text={t("terms.section2.sub2.item5")} />
+          <SubTitle text={t("terms.section2.sub2.title")} />
+          <Para text={t("terms.section2.sub2.text")} />
+          <Bullet text={t("terms.section2.sub2.item1")} />
+          <Bullet text={t("terms.section2.sub2.item2")} />
+          <Bullet text={t("terms.section2.sub2.item3")} />
+          <Bullet text={t("terms.section2.sub2.item4")} />
+          <Bullet text={t("terms.section2.sub2.item5")} />
 
-        <SubTitle text={t("terms.section2.sub3.title")} />
-        <Para text={t("terms.section2.sub3.text")} />
+          <SubTitle text={t("terms.section2.sub3.title")} />
+          <Para text={t("terms.section2.sub3.text")} />
 
-        <SubTitle text={t("terms.section2.sub4.title")} />
-        <Para text={t("terms.section2.sub4.text")} />
+          <SubTitle text={t("terms.section2.sub4.title")} />
+          <Para text={t("terms.section2.sub4.text")} />
 
-        <SubTitle text={t("terms.section2.sub5.title")} />
-        <Para text={t("terms.section2.sub5.text")} />
+          <SubTitle text={t("terms.section2.sub5.title")} />
+          <Para text={t("terms.section2.sub5.text")} />
 
-        <Divider className="mt-6" />
+          <Divider className="mt-6" />
 
-        {/* ── Section 3: Service Delivery ──────────────────────────────── */}
-        <SectionTitle text={t("terms.section3.title")} />
+          {/* ── Section 3: Service Delivery ──────────────────────────────── */}
+          <SectionTitle text={t("terms.section3.title")} />
 
-        <SubTitle text={t("terms.section3.sub1.title")} />
-        <Para text={t("terms.section3.sub1.text")} />
+          <SubTitle text={t("terms.section3.sub1.title")} />
+          <Para text={t("terms.section3.sub1.text")} />
 
-        <SubTitle text={t("terms.section3.sub2.title")} />
-        <Bullet text={t("terms.section3.sub2.bullet1")} />
-        <Bullet text={t("terms.section3.sub2.bullet2")} />
-        <Bullet text={t("terms.section3.sub2.bullet3")} />
+          <SubTitle text={t("terms.section3.sub2.title")} />
+          <Bullet text={t("terms.section3.sub2.bullet1")} />
+          <Bullet text={t("terms.section3.sub2.bullet2")} />
+          <Bullet text={t("terms.section3.sub2.bullet3")} />
 
-        <SubTitle text={t("terms.section3.sub3.title")} />
-        <Para text={t("terms.section3.sub3.text")} />
+          <SubTitle text={t("terms.section3.sub3.title")} />
+          <Para text={t("terms.section3.sub3.text")} />
 
-        <SubTitle text={t("terms.section3.sub4.title")} />
-        <Para text={t("terms.section3.sub4.text")} />
+          <SubTitle text={t("terms.section3.sub4.title")} />
+          <Para text={t("terms.section3.sub4.text")} />
 
-        <Divider className="mt-6" />
+          <Divider className="mt-6" />
 
-        {/* ── Section 4: Cancellation & Refund ────────────────────────── */}
-        <SectionTitle text={t("terms.section4.title")} />
+          {/* ── Section 4: Cancellation & Refund ────────────────────────── */}
+          <SectionTitle text={t("terms.section4.title")} />
 
-        <SubTitle text={t("terms.section4.sub1.subsub1.title")} />
-        <Para text={t("terms.section4.sub1.subsub1.text")} />
-        <Bullet text={t("terms.section4.sub1.subsub1.bullet1")} />
-        <Bullet text={t("terms.section4.sub1.subsub1.bullet2")} />
-        <Bullet text={t("terms.section4.sub1.subsub1.bullet3")} />
+          <SubTitle text={t("terms.section4.sub1.subsub1.title")} />
+          <Para text={t("terms.section4.sub1.subsub1.text")} />
+          <Bullet text={t("terms.section4.sub1.subsub1.bullet1")} />
+          <Bullet text={t("terms.section4.sub1.subsub1.bullet2")} />
+          <Bullet text={t("terms.section4.sub1.subsub1.bullet3")} />
 
-        <SubTitle text={t("terms.section4.sub1.subsub2.title")} />
-        <Para text={t("terms.section4.sub1.subsub2.text")} />
-        <Bullet text={t("terms.section4.sub1.subsub2.bullet1")} />
-        <Bullet text={t("terms.section4.sub1.subsub2.bullet2")} />
-        <Bullet text={t("terms.section4.sub1.subsub2.bullet3")} />
+          <SubTitle text={t("terms.section4.sub1.subsub2.title")} />
+          <Para text={t("terms.section4.sub1.subsub2.text")} />
+          <Bullet text={t("terms.section4.sub1.subsub2.bullet1")} />
+          <Bullet text={t("terms.section4.sub1.subsub2.bullet2")} />
+          <Bullet text={t("terms.section4.sub1.subsub2.bullet3")} />
 
-        <SubTitle text={t("terms.section4.sub1.subsub3.title")} />
-        <Para text={t("terms.section4.sub1.subsub3.text")} />
+          <SubTitle text={t("terms.section4.sub1.subsub3.title")} />
+          <Para text={t("terms.section4.sub1.subsub3.text")} />
 
-        <SubTitle text={t("terms.section4.sub1.subsub4.title")} />
-        <Para text={t("terms.section4.sub1.subsub4.text")} />
+          <SubTitle text={t("terms.section4.sub1.subsub4.title")} />
+          <Para text={t("terms.section4.sub1.subsub4.text")} />
 
-        <SubTitle text={t("terms.section4.sub1.subsub5.title")} />
-        <Para text={t("terms.section4.sub1.subsub5.text")} />
+          <SubTitle text={t("terms.section4.sub1.subsub5.title")} />
+          <Para text={t("terms.section4.sub1.subsub5.text")} />
 
-        <SubTitle text={t("terms.section4.sub2.title")} />
-        <Para text={t("terms.section4.sub2.text")} />
+          <SubTitle text={t("terms.section4.sub2.title")} />
+          <Para text={t("terms.section4.sub2.text")} />
 
-        <SubTitle text={t("terms.section4.sub3.title")} />
-        <Para text={t("terms.section4.sub3.text")} />
+          <SubTitle text={t("terms.section4.sub3.title")} />
+          <Para text={t("terms.section4.sub3.text")} />
 
-        <SubTitle text={t("terms.section4.sub4.title")} />
-        <Para text={t("terms.section4.sub4.text")} />
+          <SubTitle text={t("terms.section4.sub4.title")} />
+          <Para text={t("terms.section4.sub4.text")} />
 
-        <SubTitle text={t("terms.section4.sub5.title")} />
-        <Para text={t("terms.section4.sub5.text")} />
+          <SubTitle text={t("terms.section4.sub5.title")} />
+          <Para text={t("terms.section4.sub5.text")} />
 
-        <Divider className="mt-6" />
+          <Divider className="mt-6" />
 
-        {/* ── Section 5: Advertisements ───────────────────────────────── */}
-        <SectionTitle text={t("terms.section5.title")} />
+          {/* ── Section 5: Advertisements ───────────────────────────────── */}
+          <SectionTitle text={t("terms.section5.title")} />
 
-        <SubTitle text={t("terms.section5.sub1.title")} />
-        <Para text={t("terms.section5.sub1.text")} />
+          <SubTitle text={t("terms.section5.sub1.title")} />
+          <Para text={t("terms.section5.sub1.text")} />
 
-        <SubTitle text={t("terms.section5.sub2.title")} />
-        <Bullet text={t("terms.section5.sub2.bullet1")} />
-        <Bullet text={t("terms.section5.sub2.bullet2")} />
+          <SubTitle text={t("terms.section5.sub2.title")} />
+          <Bullet text={t("terms.section5.sub2.bullet1")} />
+          <Bullet text={t("terms.section5.sub2.bullet2")} />
 
-        <SubTitle text={t("terms.section5.sub3.title")} />
-        <Para text={t("terms.section5.sub3.text")} />
+          <SubTitle text={t("terms.section5.sub3.title")} />
+          <Para text={t("terms.section5.sub3.text")} />
 
-        <SubTitle text={t("terms.section5.sub4.title")} />
-        <Para text={t("terms.section5.sub4.text")} />
+          <SubTitle text={t("terms.section5.sub4.title")} />
+          <Para text={t("terms.section5.sub4.text")} />
 
-        <SubTitle text={t("terms.section5.sub5.title")} />
-        <Para text={t("terms.section5.sub5.text")} />
+          <SubTitle text={t("terms.section5.sub5.title")} />
+          <Para text={t("terms.section5.sub5.text")} />
 
-        <Divider className="mt-6" />
+          <Divider className="mt-6" />
 
-        {/* ── Conclusion ───────────────────────────────────────────────── */}
-        <SectionTitle text={t("terms.conclusionTitle")} />
-        <Para text={t("terms.conclusion.text")} />
+          {/* ── Conclusion ───────────────────────────────────────────────── */}
+          <SectionTitle text={t("terms.conclusionTitle")} />
+          <Para text={t("terms.conclusion.text")} />
+        </ContentColumn>
       </ScrollView>
     </SafeAreaView>
   );

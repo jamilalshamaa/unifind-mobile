@@ -23,7 +23,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { Logo } from "@/components/shared/Logo";
-import { lightColors } from "@/config/theme";
 
 export default function AuthCallbackWeb() {
   const { t } = useCustomTranslation();
@@ -36,18 +35,10 @@ export default function AuthCallbackWeb() {
 
   // Render a centered spinner so the popup is not blank while it self-closes.
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 16,
-        backgroundColor: lightColors.background,
-      }}
-    >
+    <View className="flex-1 items-center justify-center gap-4 bg-background px-8">
       <Logo variant="prussian" height={36} style={{ marginBottom: 8 }} />
       <Spinner size="large" />
-      <Text className="text-sm text-muted-foreground">{t("signingIn")}</Text>
+      <Text className="text-sm text-muted-foreground text-center">{t("signingIn")}</Text>
     </View>
   );
 }

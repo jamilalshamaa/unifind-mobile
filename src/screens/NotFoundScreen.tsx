@@ -6,7 +6,6 @@
  * RTL-safe. No API calls.
  */
 
-import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
@@ -14,6 +13,7 @@ import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/Logo";
+import { ContentColumn, NARROW_MAX_WIDTH } from "@/components/shared/ContentColumn";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 
 export default function NotFoundScreen() {
@@ -22,7 +22,7 @@ export default function NotFoundScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-primary">
-      <View className="flex-1 items-center justify-center px-8 gap-6">
+      <ContentColumn maxWidth={NARROW_MAX_WIDTH} className="flex-1 items-center justify-center px-8 gap-6">
         <Logo variant="white" height={36} />
 
         <Heading
@@ -47,7 +47,7 @@ export default function NotFoundScreen() {
           onPress={() => router.replace("/(main)/(tabs)/home")}
           className="mt-2 min-w-48"
         />
-      </View>
+      </ContentColumn>
     </SafeAreaView>
   );
 }
