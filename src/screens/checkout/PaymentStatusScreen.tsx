@@ -17,7 +17,6 @@
  *   - Both fully translated in en + ar.
  */
 
-import { View } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { CheckCircle, XCircle } from "lucide-react-native";
 import { Text } from "@/components/ui/text";

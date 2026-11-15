@@ -10,7 +10,7 @@
 
 import { useState } from "react";
 import { View, Pressable, Platform } from "react-native";
-import { Trash2, Tag } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
