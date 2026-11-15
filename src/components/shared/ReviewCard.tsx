@@ -2,7 +2,7 @@
  * ReviewCard — single review card displayed in ReviewSection.
  *
  * Shows: star rating, date, experience text, per-category mini-ratings,
- * study period, and author avatar + name.
+ * study period, author avatar + name, and a Report action (Apple 1.2).
  *
  * Extracted from ReviewSection to keep that file under ~300 lines.
  * RTL-safe. Gluestack only.
@@ -18,6 +18,7 @@ import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useLocalization } from "@/hooks/useLocalization";
 import { extractExperience, extractStudyPeriod } from "@/api/reviewsApi";
 import type { ReviewItem } from "@/components/shared/ReviewSection";
+import { ReportReviewButton } from "@/components/shared/ReportReviewButton";
 
 interface ReviewCardProps {
   review: ReviewItem;
@@ -92,9 +93,10 @@ export function ReviewCard({ review }: ReviewCardProps) {
             <User size={18} color={colors.mutedForeground} />
           )}
         </View>
-        <Text className="text-sm font-semibold text-foreground">
+        <Text className="flex-1 text-sm font-semibold text-foreground">
           {review.author.name || t("anonymous")}
         </Text>
+        <ReportReviewButton reviewId={review.id} reviewerId={review.reviewerId} />
       </View>
     </View>
   );

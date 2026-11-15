@@ -39,11 +39,15 @@ export interface TestimonialItem {
   userProgram: string;
   /** Deep-link target (TODO: replace with actual route when built) */
   linkHref: string;
+  /** Node review id and author sub, for the Report action. */
+  reviewId?: string;
+  reviewerId?: string;
 }
 
 // ─── Raw Node review shape ────────────────────────────────────────────────────
 
 interface RawReview {
+  _id?: string;
   reviewer?: string;
   targetID?: string;
   parentID?: string;
@@ -144,6 +148,8 @@ export async function fetchTestimonials(locale: "en" | "ar"): Promise<Testimonia
         testimonial: extractExperienceLocal(review.comment ?? ""),
         userName: review.firstName ?? "",
         userAvatar: resolvePhotoUrl(review.photo),
+        reviewId: review._id,
+        reviewerId: review.reviewer,
         userProgram: program?.name ?? "",
         // TODO: replace with actual route when institution-detail screen is built
         linkHref: `institution-detail/${institution.slug}`,
@@ -162,6 +168,8 @@ export async function fetchTestimonials(locale: "en" | "ar"): Promise<Testimonia
         testimonial: extractExperienceLocal(review.comment ?? ""),
         userName: review.firstName ?? "",
         userAvatar: resolvePhotoUrl(review.photo),
+        reviewId: review._id,
+        reviewerId: review.reviewer,
         userProgram: "",
         // TODO: replace with actual route when offering-detail screen is built
         linkHref: `offering-detail/${offering.slug}`,

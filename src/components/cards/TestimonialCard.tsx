@@ -24,6 +24,7 @@ import { RatingStars } from "@/components/cards/RatingStars";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useColors } from "@/hooks/useColors";
 import { brand, SHADOW_COLOR } from "@/config/theme";
+import { ReportReviewButton } from "@/components/shared/ReportReviewButton";
 
 export interface TestimonialCardProps {
   imageUrl: string;
@@ -34,12 +35,15 @@ export interface TestimonialCardProps {
   userName: string;
   userAvatar: string | null;
   userProgram?: string;
+  /** Review id and author sub: they show the Report action (Apple 1.2). */
+  reviewId?: string;
+  reviewerId?: string;
   onPress?: () => void;
 }
 
 export function TestimonialCard({
   imageUrl, logoUrl, title, rating, testimonial,
-  userName, userAvatar, userProgram, onPress,
+  userName, userAvatar, userProgram, reviewId, reviewerId, onPress,
 }: TestimonialCardProps) {
   const { t, isRtl } = useCustomTranslation();
   const colors = useColors();
@@ -144,6 +148,7 @@ export function TestimonialCard({
                 </Text>
               ) : null}
             </View>
+            <ReportReviewButton reviewId={reviewId} reviewerId={reviewerId} />
           </View>
 
           {/* Know More */}

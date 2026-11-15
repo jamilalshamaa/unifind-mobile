@@ -29,6 +29,10 @@ export interface ReviewCategoryData {
 }
 
 export interface ReviewItem {
+  /** Review id from the Node API. The Report action needs it. */
+  id?: string;
+  /** Auth0 sub of the author. The Report action is hidden on the user's own review. */
+  reviewerId?: string;
   generalRating: number;
   date: string;
   comment: string;

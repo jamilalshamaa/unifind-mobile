@@ -101,6 +101,8 @@ No sign-in is needed to browse. Open Home, Program Explorer or Growth Center, th
 
 Signed-in features: favorites, Compare, reviews and Profile. Tap the profile icon, then Sign In, and use the demo account in the sign-in fields of this form.
 
+Reviews: a user can report a review with the Report action on the review. A review with 3 reports is hidden, and the team moderates reports in the admin within 24 hours.
+
 Payments are off in this version. On an offering, the app shows the specialists, dates and times, and a notice replaces the Book and Pay buttons. No purchase is possible in the app.
 
 Language: tap AR or EN in the header of Home to switch between English and Arabic.`;
