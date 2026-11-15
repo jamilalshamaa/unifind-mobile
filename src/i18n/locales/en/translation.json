@@ -725,5 +725,15 @@
   "reportReviewConfirmMessage": "Our team will check this review within 24 hours. A review with 3 reports is hidden until the team checks it.",
   "reviewReported": "Thank you. Our team will check this review.",
   "reviewAlreadyReported": "You already reported this review.",
-  "reportReviewFailed": "Could not report the review. Try again."
+  "reportReviewFailed": "Could not report the review. Try again.",
+  "blockUser": "Block user",
+  "blockUserConfirmTitle": "Block this user?",
+  "blockUserConfirmMessage": "You will no longer see reviews from this user.",
+  "userBlocked": "User blocked. You will no longer see reviews from this user.",
+  "blockUserFailed": "Could not block the user. Try again.",
+  "blockedUsers": "Blocked users",
+  "blockedUser": "Blocked user",
+  "unblockUser": "Unblock",
+  "userUnblocked": "User unblocked.",
+  "unblockUserFailed": "Could not unblock the user. Try again."
 }

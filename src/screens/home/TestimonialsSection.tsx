@@ -20,6 +20,7 @@ import Animated, {
 import { useQuery } from "@tanstack/react-query";
 
 import { TestimonialCard } from "@/components/cards/TestimonialCard";
+import { useBlockedUsersStore, isBlockedAuthor } from "@/stores/blockedUsersStore";
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { fetchTestimonials, type TestimonialItem } from "@/services/testimonialsService";
@@ -39,6 +40,10 @@ export function TestimonialsSection() {
     queryFn: () => fetchTestimonials(locale),
     staleTime: 5 * 60 * 1000,
   });
+  const blockedIds = useBlockedUsersStore((s) => s.ids);
+  const visibleTestimonials = testimonials.filter(
+    (item: TestimonialItem) => !isBlockedAuthor(blockedIds, item.reviewerId)
+  );
 
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(12);
@@ -55,7 +60,7 @@ export function TestimonialsSection() {
   }, [isLoading, testimonials.length]);
 
   if (isLoading) return <SectionSkeleton />;
-  if (isError || !testimonials.length) return null;
+  if (isError || !visibleTestimonials.length) return null;
 
   return (
     <Animated.View style={animStyle}>
@@ -69,7 +74,7 @@ export function TestimonialsSection() {
           snapToAlignment="start"
           contentContainerStyle={isRtl ? { paddingRight: 16, paddingLeft: 32 } : { paddingLeft: 16, paddingRight: 32 }}
         >
-          {testimonials.map((item: TestimonialItem, index: number) => (
+          {visibleTestimonials.map((item: TestimonialItem, index: number) => (
             <TestimonialCard
               key={index}
               imageUrl={item.imageUrl}
