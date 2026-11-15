@@ -28,6 +28,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/cards/RatingStars";
 import { useColors } from "@/hooks/useColors";
+import { SHADOW_COLOR } from "@/config/theme";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useLocalization } from "@/hooks/useLocalization";
 
@@ -60,14 +61,14 @@ export interface OfferingCardProps {
 
 const MAX_VISIBLE = 2;
 
-function SpecialistStrip({ specialists }: { specialists: SpecialistPreview[] }) {
+function SpecialistStrip({ specialists, isRtl }: { specialists: SpecialistPreview[]; isRtl: boolean }) {
   const colors = useColors();
   const visible = specialists.slice(0, MAX_VISIBLE);
   const overflow = specialists.length - MAX_VISIBLE;
   if (visible.length === 0) return null;
 
   return (
-    <View className="flex-row items-center gap-1.5 px-4 pb-1 pt-0.5">
+    <View className={`${isRtl ? "flex-row-reverse" : "flex-row"} items-center gap-1.5 px-4 pb-1 pt-0.5`}>
       {visible.map((sp, i) => (
         <View
           key={i}
@@ -126,7 +127,9 @@ export function OfferingCard({
   primaryLabel,
 }: OfferingCardProps) {
   const colors = useColors();
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
+  const textAlign = isRtl ? "text-right" : "";
   const { formatCurrency } = useLocalization();
 
   const ctaLabel = primaryLabel ?? t("favorites.checkOffering");
@@ -151,7 +154,7 @@ export function OfferingCard({
   return (
     <View
       className="bg-card rounded-2xl border border-border overflow-hidden"
-      style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
+      style={{ shadowColor: SHADOW_COLOR, shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
     >
       {/* Banner image — lightgreen fallback so it doesn't look broken */}
       {imageSrc ? (
@@ -170,7 +173,7 @@ export function OfferingCard({
       )}
 
       {/* Badge row + heart — "Offering" as secondary (turquoise) pill */}
-      <View className="flex-row items-center justify-between px-4 pt-3 pb-1.5">
+      <View className={`${row} items-center justify-between px-4 pt-3 pb-1.5`}>
         <View className="bg-secondary rounded-full px-3 py-1">
           <Text className="text-foreground text-xs font-semibold">{t("offering")}</Text>
         </View>
@@ -191,11 +194,11 @@ export function OfferingCard({
       </View>
 
       {/* Specialist avatar strip */}
-      {specialists.length > 0 && <SpecialistStrip specialists={specialists} />}
+      {specialists.length > 0 && <SpecialistStrip specialists={specialists} isRtl={isRtl} />}
 
       {/* Title + optional rating */}
-      <View className="px-4 pt-0.5 pb-1">
-        <Heading size="sm" className="text-foreground leading-snug" numberOfLines={2}>
+      <View className={`px-4 pt-0.5 pb-1 ${isRtl ? "items-end" : ""}`}>
+        <Heading size="sm" className={`text-foreground leading-snug ${textAlign}`} numberOfLines={2}>
           {title}
         </Heading>
         {rating > 0 && (
@@ -207,40 +210,40 @@ export function OfferingCard({
 
       {/* Description */}
       {description ? (
-        <Text className="text-sm text-muted-foreground px-4 pb-3 leading-relaxed" numberOfLines={2}>
+        <Text className={`text-sm text-muted-foreground px-4 pb-3 leading-relaxed ${textAlign}`} numberOfLines={2}>
           {description}
         </Text>
       ) : null}
 
       {/* Meta row — compact, spaced, muted */}
       {(city || priceLabel || durationLabel || onlineLabel) && (
-        <View className="flex-row flex-wrap gap-x-4 gap-y-1.5 px-4 pb-3 items-center">
+        <View className={`${row} flex-wrap gap-x-4 gap-y-1.5 px-4 pb-3 items-center`}>
           {city && city !== "-" && (
-            <View className="flex-row items-center gap-1">
+            <View className={`${row} items-center gap-1 shrink`}>
               <MapPin size={11} color={colors.mutedForeground} />
-              <Text className="text-xs text-muted-foreground">{city}</Text>
+              <Text className="text-xs text-muted-foreground shrink" numberOfLines={1}>{city}</Text>
             </View>
           )}
           {priceLabel && (
-            <View className="flex-row items-center gap-1">
+            <View className={`${row} items-center gap-1 shrink`}>
               <DollarSign size={11} color={colors.mutedForeground} />
-              <Text className="text-xs text-muted-foreground">{priceLabel}</Text>
+              <Text className="text-xs text-muted-foreground shrink" numberOfLines={1}>{priceLabel}</Text>
             </View>
           )}
           {durationLabel && (
-            <View className="flex-row items-center gap-1">
+            <View className={`${row} items-center gap-1 shrink`}>
               <Clock size={11} color={colors.mutedForeground} />
-              <Text className="text-xs text-muted-foreground">{durationLabel}</Text>
+              <Text className="text-xs text-muted-foreground shrink" numberOfLines={1}>{durationLabel}</Text>
             </View>
           )}
           {onlineLabel && (
-            <View className="flex-row items-center gap-1">
+            <View className={`${row} items-center gap-1 shrink`}>
               {availableOnline ? (
                 <Wifi size={11} color={colors.mutedForeground} />
               ) : (
                 <WifiOff size={11} color={colors.mutedForeground} />
               )}
-              <Text className="text-xs text-muted-foreground">
+              <Text className="text-xs text-muted-foreground shrink" numberOfLines={1}>
                 {t("availableOnline")}: {onlineLabel}
               </Text>
             </View>

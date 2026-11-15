@@ -24,6 +24,8 @@ import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { useColors } from "@/hooks/useColors";
+import { SHADOW_COLOR } from "@/config/theme";
+import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 
 export interface ProgramCardProps {
   documentId: string;
@@ -64,11 +66,14 @@ export function ProgramCard({
   primaryLabel = "Check Program",
 }: ProgramCardProps) {
   const colors = useColors();
+  const { isRtl } = useCustomTranslation();
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
+  const textAlign = isRtl ? "text-right" : "";
 
   return (
-    <View className="bg-card rounded-2xl border border-border overflow-hidden" style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}>
+    <View className="bg-card rounded-2xl border border-border overflow-hidden" style={{ shadowColor: SHADOW_COLOR, shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}>
       {/* Header row: logo + title/university + heart */}
-      <View className="flex-row items-start gap-3 p-4 pb-3">
+      <View className={`${row} items-start gap-3 p-4 pb-3`}>
         {logoSrc ? (
           <Image
             source={{ uri: logoSrc }}
@@ -84,10 +89,10 @@ export function ProgramCard({
           </View>
         )}
         <View className="flex-1 gap-0.5">
-          <Heading size="sm" className="text-foreground leading-snug" numberOfLines={2}>
+          <Heading size="sm" className={`text-foreground leading-snug ${textAlign}`} numberOfLines={2}>
             {programTitle}
           </Heading>
-          <Text className="text-sm text-muted-foreground" numberOfLines={1}>
+          <Text className={`text-sm text-muted-foreground ${textAlign}`} numberOfLines={1}>
             {universityName}
           </Text>
         </View>
@@ -111,22 +116,22 @@ export function ProgramCard({
 
       {/* Description — 2-line clamp */}
       {description ? (
-        <Text className="text-sm text-muted-foreground px-4 pb-3 leading-relaxed" numberOfLines={2}>
+        <Text className={`text-sm text-muted-foreground px-4 pb-3 leading-relaxed ${textAlign}`} numberOfLines={2}>
           {description}
         </Text>
       ) : null}
 
       {/* Meta chips — primary-colored icons on lightgreen for proper contrast */}
-      <View className="flex-row flex-wrap gap-2 px-4 pb-4">
-        <MetaChip icon={<MapPin size={11} color={colors.primary} />} label={location} />
-        <MetaChip icon={<Clock size={11} color={colors.primary} />} label={duration} />
-        <MetaChip icon={<GraduationCap size={11} color={colors.primary} />} label={degree} />
-        {fees && <MetaChip icon={<DollarSign size={11} color={colors.primary} />} label={fees} />}
-        {language && <MetaChip icon={<Globe size={11} color={colors.primary} />} label={language} />}
+      <View className={`${row} flex-wrap gap-2 px-4 pb-4`}>
+        <MetaChip icon={<MapPin size={11} color={colors.primary} />} label={location} isRtl={isRtl} />
+        <MetaChip icon={<Clock size={11} color={colors.primary} />} label={duration} isRtl={isRtl} />
+        <MetaChip icon={<GraduationCap size={11} color={colors.primary} />} label={degree} isRtl={isRtl} />
+        {fees && <MetaChip icon={<DollarSign size={11} color={colors.primary} />} label={fees} isRtl={isRtl} />}
+        {language && <MetaChip icon={<Globe size={11} color={colors.primary} />} label={language} isRtl={isRtl} />}
       </View>
 
       {/* Actions — border-t separator + comfortable padding */}
-      <View className="flex-row gap-2 px-4 pb-4 border-t border-border pt-3">
+      <View className={`${row} gap-2 px-4 pb-4 border-t border-border pt-3`}>
         <View className="flex-1">
           <Button
             label={compareLabel}
@@ -154,11 +159,14 @@ export function ProgramCard({
 // MetaChip — foreground text on lightgreen background for readable contrast.
 // text-foreground (prussian) not text-muted-foreground (grey) — lightgreen
 // background is too light for grey text to pass the squint test.
-function MetaChip({ icon, label }: { icon: React.ReactNode; label: string }) {
+function MetaChip({ icon, label, isRtl }: { icon: React.ReactNode; label: string; isRtl?: boolean }) {
   return (
-    <View className="flex-row items-center gap-1 bg-lightgreen border border-secondary rounded-full px-2.5 py-1">
+    <View
+      className={`${isRtl ? "flex-row-reverse" : "flex-row"} items-center gap-1 bg-lightgreen border border-secondary rounded-full px-2.5 py-1`}
+      style={{ maxWidth: "100%" }}
+    >
       {icon}
-      <Text className="text-xs font-medium text-foreground" numberOfLines={1}>{label}</Text>
+      <Text className="text-xs font-medium text-foreground shrink" numberOfLines={1}>{label}</Text>
     </View>
   );
 }

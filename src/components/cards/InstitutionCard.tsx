@@ -35,6 +35,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/cards/RatingStars";
 import { useColors } from "@/hooks/useColors";
+import { SHADOW_COLOR } from "@/config/theme";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 
 export interface InstitutionRankingBadge {
@@ -102,7 +103,7 @@ export function InstitutionCard({
   return (
     <View
       className="bg-card rounded-2xl border border-border overflow-hidden"
-      style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
+      style={{ shadowColor: SHADOW_COLOR, shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }}
     >
       {/* Cover image — fixed height to avoid layout pop */}
       <View style={{ height: COVER_HEIGHT }}>
@@ -128,10 +129,10 @@ export function InstitutionCard({
             {topRankings.map((r, i) => (
               <View
                 key={i}
-                className="flex-row items-center gap-1 bg-secondary rounded-full px-2 py-0.5"
+                className={`flex-row items-center gap-1 bg-secondary rounded-full px-2 py-0.5 ${isRtl ? "flex-row-reverse" : ""}`}
               >
                 <Award size={9} color={colors.foreground} />
-                <Text className="text-foreground font-bold" style={{ fontSize: 10 }}>
+                <Text className="text-foreground font-bold" style={{ fontSize: 10 }} numberOfLines={1}>
                   #{r.position}
                   {r.rankingCategory ? ` ${r.rankingCategory}` : ""}
                 </Text>
@@ -216,9 +217,9 @@ export function InstitutionCard({
           className={`flex-row flex-wrap gap-x-4 gap-y-1 px-4 pb-3 items-center ${isRtl ? "flex-row-reverse" : ""}`}
         >
           {location ? (
-            <View className={`flex-row items-center gap-1 ${isRtl ? "flex-row-reverse" : ""}`}>
+            <View className={`flex-row items-center gap-1 shrink ${isRtl ? "flex-row-reverse" : ""}`}>
               <MapPin size={12} color={colors.mutedForeground} />
-              <Text className="text-xs text-muted-foreground" numberOfLines={1}>
+              <Text className="text-xs text-muted-foreground shrink" numberOfLines={1}>
                 {location}
               </Text>
             </View>
@@ -226,7 +227,7 @@ export function InstitutionCard({
           {fees && fees !== "-" ? (
             <View className={`flex-row items-center gap-1 ${isRtl ? "flex-row-reverse" : ""}`}>
               <DollarSign size={12} color={colors.mutedForeground} />
-              <Text className="text-xs text-muted-foreground">{fees}</Text>
+              <Text className="text-xs text-muted-foreground" numberOfLines={1}>{fees}</Text>
             </View>
           ) : null}
         </View>
