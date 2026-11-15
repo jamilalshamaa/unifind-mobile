@@ -60,7 +60,8 @@ export function SignedOutProfile() {
         {t("signInDescription")}
       </Text>
 
-      <VStack className="gap-3 w-full">
+      {/* Buttons stay phone-sized on tablets instead of stretching edge to edge. */}
+      <VStack className="gap-3 w-full max-w-sm">
         <Button
           label={t("signIn")}
           action="primary"
@@ -131,12 +132,16 @@ export function SignedInProfile() {
         />
       )}
 
-      {/* Horizontal scrollable tab bar + sign-out outside scroll */}
-      <ProfileTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* Tab bar + content share a centred 840 px column on wide screens;
+          the gradient header above stays full-bleed. */}
+      <View className="flex-1 w-full max-w-[840px] self-center">
+        {/* Horizontal scrollable tab bar */}
+        <ProfileTabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Tab content area — each tab scrolls internally */}
-      <View className="flex-1 mt-2">
-        {renderTabContent()}
+        {/* Tab content area — each tab scrolls internally */}
+        <View className="flex-1 mt-2">
+          {renderTabContent()}
+        </View>
       </View>
     </View>
   );
