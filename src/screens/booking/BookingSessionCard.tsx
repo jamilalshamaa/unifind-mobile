@@ -47,7 +47,9 @@ export interface SessionData {
 }
 
 export function BookingSessionCard({ session }: { session: SessionData }) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
+  const align = isRtl ? "text-right" : "";
   // M4 fix: was hardcoded English MODE_LABELS; now uses canonical i18n getModeLabel
   const { formatDate, formatTime, formatCurrency } = useLocalization();
 
@@ -131,34 +133,23 @@ export function BookingSessionCard({ session }: { session: SessionData }) {
           source={{ uri: session.imageUrl }}
           style={{ width: "100%", height: 120 }}
           resizeMode="cover"
+          accessibilityIgnoresInvertColors
         />
       ) : null}
 
       <View className="p-4 gap-3">
         {/* Title + price */}
-        <View className="flex-row items-start justify-between gap-2">
-          <Heading size="sm" className="text-foreground flex-1" numberOfLines={3}>
+        <View className={`${row} items-start justify-between gap-3`}>
+          <Heading size="sm" className={`text-foreground flex-1 ${align}`} numberOfLines={3}>
             {session.title}
           </Heading>
-          <View className="items-end">
+          <View className={isRtl ? "items-start" : "items-end"}>
             {showDiscount && (
-              <Text
-                style={{
-                  fontSize: 12,
-                  textDecorationLine: "line-through",
-                  color: colors.mutedForeground,
-                }}
-              >
+              <Text className="text-xs text-muted-foreground line-through" numberOfLines={1}>
                 {formatCurrency(Number(session.originalPrice), currencyCode(session.currency))}
               </Text>
             )}
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "700",
-                color: colors.foreground,
-              }}
-            >
+            <Text className="text-base font-bold text-foreground" numberOfLines={1}>
               {formatCurrency(
                 Number(showDiscount ? session.discountedPrice : session.originalPrice),
                 currencyCode(session.currency)
@@ -171,27 +162,25 @@ export function BookingSessionCard({ session }: { session: SessionData }) {
         {hasMeetingLink && (
           <Pressable
             onPress={() => Linking.openURL(session.meetingLink!)}
-            className="flex-row items-center gap-1"
+            className={`${row} items-center gap-1`}
+            accessibilityRole="link"
           >
             <Link size={14} color={colors.primary} />
-            <Text
-              style={{ color: colors.primary, fontSize: 13, textDecorationLine: "underline" }}
-              numberOfLines={1}
-            >
+            <Text className="text-[13px] text-primary underline shrink" numberOfLines={1}>
               {session.meetingLink}
             </Text>
           </Pressable>
         )}
 
-        {/* Meta items */}
+        {/* Meta items — icon centered on the label/value pair */}
         <View className="gap-3">
           {metaItems.map((item) =>
             item.value ? (
-              <View key={item.label} className="flex-row items-center gap-2">
+              <View key={item.label} className={`${row} items-center gap-2`}>
                 <item.icon size={15} color={colors.mutedForeground} />
-                <View>
-                  <Text className="text-xs text-muted-foreground">{item.label}</Text>
-                  <Text className="text-sm text-foreground font-medium">{item.value}</Text>
+                <View className="flex-1">
+                  <Text className={`text-xs text-muted-foreground ${align}`}>{item.label}</Text>
+                  <Text className={`text-sm text-foreground font-medium ${align}`}>{item.value}</Text>
                 </View>
               </View>
             ) : null

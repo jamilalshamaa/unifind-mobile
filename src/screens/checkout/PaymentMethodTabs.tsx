@@ -7,6 +7,9 @@
  *   - Outline Badge with t('common.soon') label beside the card tab text.
  *   - Outer opacity:0.5 removed; text remains text-muted-foreground + border-dashed.
  *   - brand import removed; GradientView uses colors.primary / colors.secondary tokens.
+ *
+ * Layout: every tab has the same min height (44) and radius, so the gradient
+ * tab and the dashed tab line up; tab order mirrors in RTL.
  */
 
 import { View, Pressable } from "react-native";
@@ -17,12 +20,15 @@ import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useColors } from "@/hooks/useColors";
 import { showToast } from "@/stores/toastStore";
 
+/** Shared tab height: a 44pt touch target, equal for every tab. */
+const TAB_MIN_HEIGHT = 44;
+
 interface PaymentMethodTabsProps {
   selected: string;
 }
 
 export function PaymentMethodTabs({ selected }: PaymentMethodTabsProps) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
   const colors = useColors();
 
   const tabs = [
@@ -31,7 +37,7 @@ export function PaymentMethodTabs({ selected }: PaymentMethodTabsProps) {
   ];
 
   return (
-    <View className="flex-row gap-2 bg-muted rounded-xl p-1">
+    <View className={`gap-2 bg-muted rounded-xl p-1 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
       {tabs.map((tab) => {
         const isActive = selected === tab.value && !tab.disabled;
 
@@ -46,15 +52,16 @@ export function PaymentMethodTabs({ selected }: PaymentMethodTabsProps) {
               accessibilityLabel={`${tab.label} — ${t("common.comingSoon")}`}
             >
               <View
-                className="items-center py-2 px-3 rounded-xl flex-row justify-center gap-1"
+                className={`items-center px-3 rounded-[10px] justify-center gap-1 ${isRtl ? "flex-row-reverse" : "flex-row"}`}
                 style={{
+                  minHeight: TAB_MIN_HEIGHT,
                   borderWidth: 1,
                   borderStyle: "dashed",
                   borderColor: colors.border,
                 }}
               >
                 <Text
-                  className="text-muted-foreground text-sm font-medium"
+                  className="text-muted-foreground text-sm font-medium shrink"
                   numberOfLines={1}
                 >
                   {tab.label}
@@ -77,8 +84,8 @@ export function PaymentMethodTabs({ selected }: PaymentMethodTabsProps) {
             {isActive ? (
               <GradientView
                 colors={[colors.primary, colors.secondary]}
-                style={{ borderRadius: 10 }}
-                className="items-center py-2 px-3"
+                style={{ borderRadius: 10, minHeight: TAB_MIN_HEIGHT, justifyContent: "center" }}
+                className="items-center px-3"
               >
                 <Text
                   style={{
@@ -92,7 +99,10 @@ export function PaymentMethodTabs({ selected }: PaymentMethodTabsProps) {
                 </Text>
               </GradientView>
             ) : (
-              <View className="items-center py-2 px-3 rounded-xl">
+              <View
+                className="items-center justify-center px-3 rounded-[10px]"
+                style={{ minHeight: TAB_MIN_HEIGHT }}
+              >
                 <Text
                   className="text-muted-foreground text-sm font-medium"
                   numberOfLines={1}

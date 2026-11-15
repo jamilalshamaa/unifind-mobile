@@ -33,6 +33,7 @@ import { AppHeader } from "@/components/shared/AppHeader";
 import { UniversalList } from "@/components/common/UniversalList";
 import { OfferingCard } from "@/components/cards/OfferingCard";
 import { ListSkeleton } from "@/components/common/ListSkeleton";
+import { contentColumnStyle } from "@/config/theme";
 
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useAuthStore } from "@/stores/authStore";
@@ -156,29 +157,30 @@ export default function FindOfferingsScreen({ subNav, initialFilters: initialFil
       const description = extractPlainText(item.description);
 
       return (
-        <OfferingCard
-          key={`${item.id}`}
-          id={item.id}
-          imageSrc={item.image?.url ?? null}
-          title={item.title ?? "-"}
-          description={description}
-          city={city}
-          sessionDuration={item.nodeData.sessionDuration ?? null}
-          price={item.nodeData.minPrice ?? null}
-          rating={item.ratingStars ?? 0}
-          availableOnline={item.availableOnline ?? null}
-          specialists={specialists}
-          isFavorite={isFavorite("Offering", String(item.id))}
-          onToggleFavorite={() => _toggleFav("Offering", String(item.id))}
-          onPrimaryClick={() => {
-            if (item.slug) {
-              router.push(`/(main)/offerings/${item.slug}` as never);
-            } else {
-              showToast(t("common.comingSoon"));
-            }
-          }}
-          primaryLabel={t("favorites.checkOffering")}
-        />
+        <View style={contentColumnStyle} key={`${item.id}`}>
+          <OfferingCard
+            id={item.id}
+            imageSrc={item.image?.url ?? null}
+            title={item.title ?? "-"}
+            description={description}
+            city={city}
+            sessionDuration={item.nodeData.sessionDuration ?? null}
+            price={item.nodeData.minPrice ?? null}
+            rating={item.ratingStars ?? 0}
+            availableOnline={item.availableOnline ?? null}
+            specialists={specialists}
+            isFavorite={isFavorite("Offering", String(item.id))}
+            onToggleFavorite={() => _toggleFav("Offering", String(item.id))}
+            onPrimaryClick={() => {
+              if (item.slug) {
+                router.push(`/(main)/offerings/${item.slug}` as never);
+              } else {
+                showToast(t("common.comingSoon"));
+              }
+            }}
+            primaryLabel={t("favorites.checkOffering")}
+          />
+        </View>
       );
     },
     [isFavorite, _toggleFav, t]
@@ -214,7 +216,9 @@ export default function FindOfferingsScreen({ subNav, initialFilters: initialFil
   if (!filterDataLoaded && (params.category || params.field)) {
     const skel = (
       <View className="flex-1 pt-4">
-        <ListSkeleton variant="offering" />
+        <View style={contentColumnStyle}>
+          <ListSkeleton variant="offering" />
+        </View>
       </View>
     );
     if (embedded) return skel;

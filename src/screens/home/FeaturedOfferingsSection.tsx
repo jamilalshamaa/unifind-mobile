@@ -65,8 +65,9 @@ export function FeaturedOfferingsSection() {
   return (
     <Animated.View style={animStyle}>
       {/* Rounded prussian band with top turquoise accent line */}
-      <View className="mx-0 my-0 bg-prussian" style={{ borderTopWidth: 2, borderTopColor: colors.secondary }}>
-        <View className="pt-7 pb-6">
+      <View className="bg-prussian" style={{ borderTopWidth: 2, borderTopColor: colors.secondary }}>
+        {/* Wide screens: header and carousel share the centred content column. */}
+        <View className="pt-7 pb-6 w-full max-w-[840px] self-center">
           <SectionHeader
             titleKey="discoverOurOfferings"
             onSeeAll={() => router.push("/(main)/(tabs)/growth-center")}

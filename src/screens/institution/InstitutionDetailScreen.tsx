@@ -35,6 +35,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useSelection } from "@/hooks/useSelection";
 import { useInstitutionDetail } from "@/hooks/queries/useInstitutionDetail";
 import { showToast } from "@/stores/toastStore";
+import { contentColumnStyle } from "@/config/theme";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -167,44 +168,46 @@ export default function InstitutionDetailScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* 1. Hero */}
-        <InstitutionHeroSection
-          institution={institution}
-          rating={averages.averageGeneralRating}
-          nbReviews={averages.totalReviews}
-          nbPrograms={nbPrograms}
-          isFavorite={isFavorite("Institution", docId)}
-          isCompared={isCompared("Institution", docId)}
-          isLoggedIn={isLoggedIn}
-          onToggleFavorite={handleToggleFavorite}
-          onAddToCompare={handleAddToCompare}
-          onAddReviewPress={handleAddReviewPress}
-        />
-
-        <View className="gap-6 pt-4">
-          {/* 2. Overview */}
-          <InstitutionOverviewSection institution={institution} />
-
-          {/* 3. Academic Programs */}
-          <InstitutionAcademicSection
-            academicData={academicData}
-            institutionSlug={slug ?? ""}
-            locale={locale}
+        <View style={contentColumnStyle}>
+          {/* 1. Hero */}
+          <InstitutionHeroSection
+            institution={institution}
+            rating={averages.averageGeneralRating}
+            nbReviews={averages.totalReviews}
+            nbPrograms={nbPrograms}
+            isFavorite={isFavorite("Institution", docId)}
+            isCompared={isCompared("Institution", docId)}
             isLoggedIn={isLoggedIn}
+            onToggleFavorite={handleToggleFavorite}
+            onAddToCompare={handleAddToCompare}
+            onAddReviewPress={handleAddReviewPress}
           />
 
-          {/* 4. Tuition Fees */}
-          <InstitutionTuitionSection institution={institution} />
+          <View className="gap-6 pt-4">
+            {/* 2. Overview */}
+            <InstitutionOverviewSection institution={institution} />
 
-          {/* 5. Reviews */}
-          <InstitutionReviewsSection
-            institutionDocumentId={docId}
-            institutionSlug={slug ?? ""}
-            averages={averages}
-            locale={locale}
-            isLoggedIn={isLoggedIn}
-            onReviewSubmitted={handleReviewSubmitted}
-          />
+            {/* 3. Academic Programs */}
+            <InstitutionAcademicSection
+              academicData={academicData}
+              institutionSlug={slug ?? ""}
+              locale={locale}
+              isLoggedIn={isLoggedIn}
+            />
+
+            {/* 4. Tuition Fees */}
+            <InstitutionTuitionSection institution={institution} />
+
+            {/* 5. Reviews */}
+            <InstitutionReviewsSection
+              institutionDocumentId={docId}
+              institutionSlug={slug ?? ""}
+              averages={averages}
+              locale={locale}
+              isLoggedIn={isLoggedIn}
+              onReviewSubmitted={handleReviewSubmitted}
+            />
+          </View>
         </View>
       </ScrollView>
 

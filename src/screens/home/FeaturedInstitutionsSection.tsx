@@ -65,7 +65,8 @@ export function FeaturedInstitutionsSection() {
   return (
     <Animated.View style={animStyle}>
       <View className="bg-prussian" style={{ borderTopWidth: 2, borderTopColor: colors.secondary }}>
-        <View className="pt-7 pb-6">
+        {/* Wide screens: header and carousel share the centred content column. */}
+        <View className="pt-7 pb-6 w-full max-w-[840px] self-center">
           <SectionHeader
             titleKey="featuredInstitutions"
             onSeeAll={() => router.push("/(main)/find?find=institutions" as never)}

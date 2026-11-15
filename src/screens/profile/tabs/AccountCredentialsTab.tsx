@@ -44,7 +44,10 @@ function LoadingSkeleton() {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function AccountCredentialsTab() {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
+  // Native layout stays LTR; RTL is mirrored by hand (see i18n/language.ts).
+  const rtlText = isRtl ? "text-right" : "";
+  const bannerDirection = isRtl ? "row-reverse" : "row";
   const colors = useColors();
 
   // Shared, cached user info (React Query) — same entry as the profile header.
@@ -108,17 +111,18 @@ export function AccountCredentialsTab() {
       keyboardShouldPersistTaps="handled"
     >
       <View className="bg-card rounded-2xl p-4 gap-4">
-        <Heading size="sm" className="text-foreground">{t("accountCredentials")}</Heading>
+        <Heading size="sm" className={`text-foreground ${rtlText}`}>{t("accountCredentials")}</Heading>
 
         {/* Email — read-only */}
         <VStack className="gap-1">
-          <Text className="text-sm font-semibold text-foreground">{t("profileEmail")}</Text>
+          <Text className={`text-sm font-semibold text-foreground ${rtlText}`}>{t("profileEmail")}</Text>
           <Input>
             <InputField
               value={email}
               editable={false}
               placeholder="name@example.com"
               className="text-muted-foreground"
+              textAlign={isRtl ? "right" : "left"}
             />
           </Input>
         </VStack>
@@ -135,13 +139,13 @@ export function AccountCredentialsTab() {
                 borderRadius: 12,
                 paddingHorizontal: 16,
                 paddingVertical: 12,
-                flexDirection: "row",
+                flexDirection: bannerDirection,
                 alignItems: "center",
                 gap: 12,
               }}
             >
               <CircleAlert size={20} color={colors.destructive} />
-              <Text className="text-foreground text-sm flex-1">{statusMessage}</Text>
+              <Text className={`text-foreground text-sm flex-1 ${rtlText}`}>{statusMessage}</Text>
             </View>
           ) : (
             /* Success: bg-lightgreen with CircleCheck (colors.primary) */
@@ -150,13 +154,13 @@ export function AccountCredentialsTab() {
               style={{
                 paddingHorizontal: 16,
                 paddingVertical: 12,
-                flexDirection: "row",
+                flexDirection: bannerDirection,
                 alignItems: "center",
                 gap: 12,
               }}
             >
               <CircleCheck size={20} color={colors.primary} />
-              <Text className="text-foreground text-sm flex-1">{statusMessage}</Text>
+              <Text className={`text-foreground text-sm flex-1 ${rtlText}`}>{statusMessage}</Text>
             </View>
           )
         ) : null}

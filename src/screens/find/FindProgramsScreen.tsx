@@ -24,6 +24,7 @@ import { ScreenContainer } from "@/components/shared/ScreenContainer";
 import { UniversalList } from "@/components/common/UniversalList";
 import { CompareBar } from "@/components/common/CompareBar";
 import { ListSkeleton } from "@/components/common/ListSkeleton";
+import { contentColumnStyle } from "@/config/theme";
 
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useSelection } from "@/hooks/useSelection";
@@ -196,7 +197,9 @@ export default function FindProgramsScreen({ subNav, embedded }: Props) {
   if (!filterDataLoaded && (params.level || params.field || params.location)) {
     const skel = (
       <View className="flex-1 pt-4">
-        <ListSkeleton variant="program" />
+        <View style={contentColumnStyle}>
+          <ListSkeleton variant="program" />
+        </View>
       </View>
     );
     return embedded ? skel : (

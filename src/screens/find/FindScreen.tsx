@@ -24,6 +24,7 @@ import { ScreenContainer } from "@/components/shared/ScreenContainer";
 import { SubNavBar, type SubNavTab } from "@/components/common/SubNavBar";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useColors } from "@/hooks/useColors";
+import { contentColumnStyle } from "@/config/theme";
 
 import FindProgramsScreen from "@/screens/find/FindProgramsScreen";
 import FindInstitutionsScreen from "@/screens/find/FindInstitutionsScreen";
@@ -60,27 +61,29 @@ export default function FindScreen({ asTabRoot = false }: { asTabRoot?: boolean 
   return (
     <ScreenContainer>
       <View className="bg-background border-b border-border">
-        {/* Title row */}
-        <View
-          className={`flex-row items-center gap-2 px-4 pt-4 pb-2 ${isRtl ? "flex-row-reverse" : ""}`}
-        >
-          {!asTabRoot && (
-            <Pressable
-              onPress={() => router.back()}
-              className="p-1"
-              hitSlop={14}
-              accessibilityRole="button"
-              accessibilityLabel="Back"
-            >
-              <BackIcon size={24} color={colors.foreground} />
-            </Pressable>
-          )}
-          <Heading size="lg" numberOfLines={1} className="flex-1 text-foreground">
-            {t("programExplorer.title")}
-          </Heading>
+        <View style={contentColumnStyle}>
+          {/* Title row */}
+          <View
+            className={`flex-row items-center gap-2 px-4 pt-4 pb-2 ${isRtl ? "flex-row-reverse" : ""}`}
+          >
+            {!asTabRoot && (
+              <Pressable
+                onPress={() => router.back()}
+                className="p-1"
+                hitSlop={14}
+                accessibilityRole="button"
+                accessibilityLabel="Back"
+              >
+                <BackIcon size={24} color={colors.foreground} />
+              </Pressable>
+            )}
+            <Heading size="lg" numberOfLines={1} className="flex-1 text-foreground">
+              {t("programExplorer.title")}
+            </Heading>
+          </View>
+          {/* Segmented pill tabs */}
+          <SubNavBar activeTab={activeTab} onTabPress={handleTabPress} />
         </View>
-        {/* Segmented pill tabs */}
-        <SubNavBar activeTab={activeTab} onTabPress={handleTabPress} />
       </View>
 
       {/* Only the list swaps — header above stays put */}

@@ -12,7 +12,7 @@
  */
 
 import { useEffect } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -37,15 +37,7 @@ const STATS: StatTileProps[] = [
   { Icon: Eye,        value: "100,000+",  labelKey: "numbers.monthly_social_media_views" },
 ];
 
-function StaggeredRow({
-  left,
-  right,
-  delay,
-}: {
-  left: StatTileProps;
-  right: StatTileProps;
-  delay: number;
-}) {
+function StaggeredRow({ items, delay }: { items: StatTileProps[]; delay: number }) {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(16);
   const style = useAnimatedStyle(() => ({
@@ -63,27 +55,28 @@ function StaggeredRow({
   // tiles fall back to a full-width column with no gap.
   return (
     <Animated.View style={[{ flexDirection: "row", gap: 12 }, style]}>
-      <StatTile {...left} />
-      <StatTile {...right} />
+      {items.map((item) => (
+        <StatTile key={item.labelKey} {...item} />
+      ))}
     </Animated.View>
   );
 }
 
 export function NumbersSection({ titleKey = "unifindByTheNumbers" }: { titleKey?: string } = {}) {
   const colors = useColors();
-  const rows: [StatTileProps, StatTileProps][] = [
-    [STATS[0], STATS[1]],
-    [STATS[2], STATS[3]],
-    [STATS[4], STATS[5]],
-  ];
+  // Phones: 2 columns (3 rows). Tablets / wide windows: 3 columns (2 rows).
+  const { width } = useWindowDimensions();
+  const columns = width >= 720 ? 3 : 2;
+  const rows: StatTileProps[][] = [];
+  for (let i = 0; i < STATS.length; i += columns) rows.push(STATS.slice(i, i + columns));
 
   return (
     <View className="bg-prussian" style={{ borderTopWidth: 2, borderTopColor: colors.secondary }}>
-      <View className="pt-7 pb-6 px-4">
+      <View className="pt-7 pb-6 px-4 w-full max-w-[840px] self-center">
         <SectionHeader titleKey={titleKey} onDark />
         <View className="gap-3">
-          {rows.map(([left, right], i) => (
-            <StaggeredRow key={i} left={left} right={right} delay={i * 80} />
+          {rows.map((items, i) => (
+            <StaggeredRow key={`${columns}-${i}`} items={items} delay={i * 80} />
           ))}
         </View>
       </View>

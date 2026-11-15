@@ -36,21 +36,25 @@ const MAX_VISIBLE = 3;
 function SpecialistAvatarStack({
   specialists,
   label,
+  isRtl,
 }: {
   specialists: NodeOfferingSpecialist[];
   label: string;
+  isRtl: boolean;
 }) {
   const colors = useColors();
   if (specialists.length === 0) return null;
   const visible = specialists.slice(0, MAX_VISIBLE);
   const overflow = specialists.length - MAX_VISIBLE;
+  // Avatars overlap toward the reading start: left in LTR, right in RTL.
+  const overlapSide = isRtl ? "marginRight" : "marginLeft";
 
   return (
     <View className="mt-3">
       {/* §S8 specialist label — text-xs floor, muted */}
-      <Text className="text-xs text-muted-foreground mb-1">{label}</Text>
+      <Text className={`text-xs text-muted-foreground mb-1 ${isRtl ? "text-right" : ""}`}>{label}</Text>
 
-      <View className="flex-row items-center">
+      <View className={`${isRtl ? "flex-row-reverse" : "flex-row"} items-center`}>
         {visible.map((sp, i) => (
           <View
             // _id can be undefined on these Node specialist objects → key collisions.
@@ -63,7 +67,7 @@ function SpecialistAvatarStack({
               overflow: "hidden",
               borderWidth: 2,
               borderColor: colors.background,
-              marginLeft: i === 0 ? 0 : -8,
+              [overlapSide]: i === 0 ? 0 : -8,
               backgroundColor: colors.muted,
               alignItems: "center",
               justifyContent: "center",
@@ -89,7 +93,7 @@ function SpecialistAvatarStack({
               backgroundColor: colors.muted,
               alignItems: "center",
               justifyContent: "center",
-              marginLeft: -8,
+              [overlapSide]: -8,
             }}
           >
             <Text className="text-xs text-muted-foreground font-bold">+{overflow}</Text>
@@ -167,7 +171,7 @@ export function OfferingHeroSection({
 
       {/* Specialist avatar stack */}
       <View className="px-4">
-        <SpecialistAvatarStack specialists={specialists} label={t("specialists")} />
+        <SpecialistAvatarStack specialists={specialists} label={t("specialists")} isRtl={isRtl} />
       </View>
 
       {/* Hero card */}

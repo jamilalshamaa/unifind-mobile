@@ -84,8 +84,9 @@ function StarRating({
   onChange: (v: number) => void;
   invalid?: boolean;
 }) {
+  const { isRtl } = useCustomTranslation();
   return (
-    <View className="flex-row gap-1">
+    <View className={`gap-1 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
       {[1, 2, 3, 4, 5].map((star) => (
         <AnimatedStar
           key={star}
@@ -114,9 +115,10 @@ function RatingRow({
   onChange: (v: number) => void;
   invalid?: boolean;
 }) {
+  const { isRtl } = useCustomTranslation();
   return (
-    <View className="gap-1">
-      <View className="flex-row items-center gap-1">
+    <View className={`gap-1 ${isRtl ? "items-end" : "items-start"}`}>
+      <View className={`items-center gap-1 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
         <Text className="text-sm font-medium text-foreground">{label}</Text>
         {required && <Text className="text-sm text-destructive">*</Text>}
       </View>
@@ -138,8 +140,8 @@ export function BookingReviewSection({
   specialistName,
   eventTypeMode,
 }: BookingReviewSectionProps) {
-  const { t } = useCustomTranslation();
-  const colors = useColors();
+  const { t, isRtl } = useCustomTranslation();
+  const align = isRtl ? "text-right" : "";
 
   const [isReviewed, setIsReviewed] = useState(false);
   const [checkLoading, setCheckLoading] = useState(true);
@@ -202,7 +204,7 @@ export function BookingReviewSection({
 
   if (checkLoading) {
     return (
-      <Skeleton className="h-16 rounded-xl bg-muted" />
+      <Skeleton className="h-[100px] rounded-2xl bg-muted" />
     );
   }
 
@@ -218,7 +220,7 @@ export function BookingReviewSection({
 
   return (
     <View className="bg-card rounded-2xl border border-border p-4 gap-4">
-      <Heading size="sm" className="text-foreground">{t("review.leaveReview")}</Heading>
+      <Heading size="sm" className={`text-foreground ${align}`}>{t("review.leaveReview")}</Heading>
 
       {/* General Rating */}
       <RatingRow
@@ -254,12 +256,15 @@ export function BookingReviewSection({
 
       {/* Experience textarea — Gluestack Textarea */}
       <VStack className="gap-1">
-        <Text className="text-sm font-medium text-foreground">{t("review.shareExperience")}</Text>
+        <Text className={`text-sm font-medium text-foreground ${align}`}>
+          {t("review.shareExperience")}
+        </Text>
         <Textarea>
           <TextareaInput
             value={experience}
             onChangeText={setExperience}
             placeholder={t("review.experiencePlaceholder")}
+            style={{ textAlign: isRtl ? "right" : "left" }}
           />
         </Textarea>
       </VStack>

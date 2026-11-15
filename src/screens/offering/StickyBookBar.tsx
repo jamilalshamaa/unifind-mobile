@@ -11,6 +11,7 @@ import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useLocalization } from "@/hooks/useLocalization";
+import { contentColumnStyle } from "@/config/theme";
 
 interface StickyBookBarProps {
   /** Lowest price across the offering's session types; hidden when unknown/0. */
@@ -27,25 +28,34 @@ export function StickyBookBar({ fromPrice, onBook }: StickyBookBarProps) {
   return (
     <View
       testID="sticky-book-bar"
-      className={`absolute left-0 right-0 bottom-0 border-t border-border bg-background px-4 pt-3 flex-row items-center gap-3 ${isRtl ? "flex-row-reverse" : ""}`}
+      className="absolute left-0 right-0 bottom-0 border-t border-border bg-background px-4 pt-3"
       style={{ paddingBottom: Math.max(insets.bottom, 12) }}
     >
-      {showPrice && (
-        <View className="flex-1">
-          <Text className={`text-xs text-muted-foreground ${isRtl ? "text-right" : ""}`}>{t("from")}</Text>
-          <Text className={`text-lg font-bold text-foreground ${isRtl ? "text-right" : ""}`}>
-            {formatCurrency(fromPrice, "USD")}
-          </Text>
+      {/* Row capped to the content column so it lines up with the page on tablets */}
+      <View
+        className={`items-center gap-3 ${isRtl ? "flex-row-reverse" : "flex-row"}`}
+        style={contentColumnStyle}
+      >
+        {showPrice && (
+          <View className="flex-1">
+            <Text className={`text-xs text-muted-foreground ${isRtl ? "text-right" : ""}`}>{t("from")}</Text>
+            <Text
+              className={`text-lg font-bold text-foreground ${isRtl ? "text-right" : ""}`}
+              numberOfLines={1}
+            >
+              {formatCurrency(fromPrice, "USD")}
+            </Text>
+          </View>
+        )}
+        <View className={showPrice ? undefined : "flex-1"}>
+          <Button
+            label={t("bookSeat")}
+            onPress={onBook}
+            action="primary"
+            className={showPrice ? "px-8" : "w-full"}
+            testID="sticky-book-seat"
+          />
         </View>
-      )}
-      <View className={showPrice ? undefined : "flex-1"}>
-        <Button
-          label={t("bookSeat")}
-          onPress={onBook}
-          action="primary"
-          className={showPrice ? "px-8" : "w-full"}
-          testID="sticky-book-seat"
-        />
       </View>
     </View>
   );

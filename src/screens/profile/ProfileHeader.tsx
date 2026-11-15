@@ -117,8 +117,13 @@ export function ProfileHeader({ firstName, lastName, role, email }: ProfileHeade
       <View
         testID="profile-header-row"
         style={{
+          // Same 16 px gutter as the tab bar card below (mx-4), and the same
+          // centred 840 px column as the tab content on wide screens.
+          width: "100%",
+          maxWidth: 840,
+          alignSelf: "center",
           paddingVertical: 14,
-          paddingHorizontal: 20,
+          paddingHorizontal: 16,
           flexDirection: isRtl ? "row-reverse" : "row",
           alignItems: "center",
           gap: 14,

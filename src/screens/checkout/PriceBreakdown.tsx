@@ -23,8 +23,9 @@ export function PriceBreakdown({
   localPromo,
   overrideFinalPrice,
 }: PriceBreakdownProps) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
   const { formatCurrency } = useLocalization();
+  const row = `${isRtl ? "flex-row-reverse" : "flex-row"} items-center justify-between gap-3`;
 
   const currencyCode =
     (booking.currency?.code as "USD" | "LBP") === "LBP" ? "LBP" : "USD";
@@ -55,16 +56,16 @@ export function PriceBreakdown({
   return (
     <View className="bg-card rounded-2xl border border-border p-4 gap-3">
       {/* Subtotal */}
-      <View className="flex-row items-center justify-between">
-        <Text className="text-sm text-muted-foreground">{t("subtotal")}</Text>
-        <Text className="text-sm font-semibold text-foreground">{fmt(subtotal)}</Text>
+      <View className={row}>
+        <Text className="text-sm text-muted-foreground shrink">{t("subtotal")}</Text>
+        <Text className="text-sm font-semibold text-foreground" numberOfLines={1}>{fmt(subtotal)}</Text>
       </View>
 
       {/* Promo discount — §2: discount amount → text-secondary (turquoise) */}
       {discountAmount > 0 && (
-        <View className="flex-row items-center justify-between">
-          <Text className="text-sm text-muted-foreground">{t("promo")}</Text>
-          <Text className="text-sm font-semibold text-secondary">
+        <View className={row}>
+          <Text className="text-sm text-muted-foreground shrink">{t("promo")}</Text>
+          <Text className="text-sm font-semibold text-secondary" numberOfLines={1}>
             -{fmt(discountAmount)}
           </Text>
         </View>
@@ -73,9 +74,9 @@ export function PriceBreakdown({
       <Divider />
 
       {/* Total */}
-      <View className="flex-row items-center justify-between">
-        <Text className="text-base font-bold text-foreground">{t("total")}</Text>
-        <Text className="text-lg font-bold text-foreground">{fmt(total)}</Text>
+      <View className={row}>
+        <Text className="text-base font-bold text-foreground shrink">{t("total")}</Text>
+        <Text className="text-lg font-bold text-foreground" numberOfLines={1}>{fmt(total)}</Text>
       </View>
     </View>
   );

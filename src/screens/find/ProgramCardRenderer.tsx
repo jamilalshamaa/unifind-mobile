@@ -5,6 +5,8 @@
  */
 
 import React, { useCallback } from "react";
+import { View } from "react-native";
+import { contentColumnStyle } from "@/config/theme";
 import { ProgramCard } from "@/components/cards/ProgramCard";
 import { showToast } from "@/stores/toastStore";
 import { extractPlainText } from "@/api/catalog";
@@ -75,34 +77,35 @@ export function useProgramCardRenderer({
       const description = extractPlainText(prog.about);
 
       return (
-        <ProgramCard
-          key={docId}
-          documentId={docId}
-          logoSrc={prog.institution?.logo?.url}
-          programTitle={prog.name || "-"}
-          universityName={prog.institution?.name ?? "-"}
-          description={description}
-          location={locationLabel}
-          duration={duration}
-          degree={prog.degree?.title ?? "-"}
-          fees={fees}
-          language={langLabel}
-          isFavorite={isFavorite(docId)}
-          isCompared={isCompared(docId)}
-          onToggleFavorite={() => toggleFavorite(prog)}
-          onAddToCompare={() => toggleCompare(prog)}
-          onPrimaryClick={() => {
-            if (prog.slug && prog.institution?.slug) {
-              router.push(
-                `/(main)/institutions/${prog.institution.slug}/programs/${prog.slug}` as never
-              );
-            } else {
-              showToast(`${prog.name} · ${t("common.comingSoon")}`);
-            }
-          }}
-          compareLabel={isCompared(docId) ? t("inCompareList") : t("btnAddToCompare")}
-          primaryLabel={t("checkProgram")}
-        />
+        <View style={contentColumnStyle} key={docId}>
+          <ProgramCard
+            documentId={docId}
+            logoSrc={prog.institution?.logo?.url}
+            programTitle={prog.name || "-"}
+            universityName={prog.institution?.name ?? "-"}
+            description={description}
+            location={locationLabel}
+            duration={duration}
+            degree={prog.degree?.title ?? "-"}
+            fees={fees}
+            language={langLabel}
+            isFavorite={isFavorite(docId)}
+            isCompared={isCompared(docId)}
+            onToggleFavorite={() => toggleFavorite(prog)}
+            onAddToCompare={() => toggleCompare(prog)}
+            onPrimaryClick={() => {
+              if (prog.slug && prog.institution?.slug) {
+                router.push(
+                  `/(main)/institutions/${prog.institution.slug}/programs/${prog.slug}` as never
+                );
+              } else {
+                showToast(`${prog.name} · ${t("common.comingSoon")}`);
+              }
+            }}
+            compareLabel={isCompared(docId) ? t("inCompareList") : t("btnAddToCompare")}
+            primaryLabel={t("checkProgram")}
+          />
+        </View>
       );
     },
     [isFavorite, isCompared, toggleFavorite, toggleCompare, t, formatCurrency, formatNumber]
