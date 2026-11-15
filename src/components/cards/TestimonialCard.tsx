@@ -25,6 +25,7 @@ import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useColors } from "@/hooks/useColors";
 import { brand, SHADOW_COLOR } from "@/config/theme";
 import { ReportReviewButton } from "@/components/shared/ReportReviewButton";
+import { BlockUserButton } from "@/components/shared/BlockUserButton";
 
 export interface TestimonialCardProps {
   imageUrl: string;
@@ -35,7 +36,7 @@ export interface TestimonialCardProps {
   userName: string;
   userAvatar: string | null;
   userProgram?: string;
-  /** Review id and author sub: they show the Report action (Apple 1.2). */
+  /** Review id and author sub: they show the Report and Block actions (Apple 1.2). */
   reviewId?: string;
   reviewerId?: string;
   onPress?: () => void;
@@ -149,6 +150,7 @@ export function TestimonialCard({
               ) : null}
             </View>
             <ReportReviewButton reviewId={reviewId} reviewerId={reviewerId} />
+            <BlockUserButton reviewerId={reviewerId} />
           </View>
 
           {/* Know More */}

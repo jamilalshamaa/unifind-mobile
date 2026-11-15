@@ -19,6 +19,7 @@ import { RatingStars } from "@/components/cards/RatingStars";
 import { useColors } from "@/hooks/useColors";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { ReviewCard } from "@/components/shared/ReviewCard";
+import { useBlockedUsersStore, isBlockedAuthor } from "@/stores/blockedUsersStore";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -127,6 +128,7 @@ export function ReviewSection({
   const BackIcon = isRtl ? ChevronRight : ChevronLeft;
   const NextIcon = isRtl ? ChevronLeft : ChevronRight;
   const colors = useColors();
+  const blockedIds = useBlockedUsersStore((s) => s.ids);
 
   return (
     <View>
@@ -181,9 +183,12 @@ export function ReviewSection({
       )}
 
       {/* Reviews list — each card in its own file */}
-      {data.reviews.map((review, i) => (
-        <ReviewCard key={i} review={review} />
-      ))}
+      {/* A blocked author's reviews are removed at once (Apple 1.2) */}
+      {data.reviews
+        .filter((review) => !isBlockedAuthor(blockedIds, review.reviewerId))
+        .map((review, i) => (
+          <ReviewCard key={review.id ?? i} review={review} />
+        ))}
 
       {/* Pagination */}
       {totalPages > 1 && (

@@ -725,5 +725,15 @@
   "reportReviewConfirmMessage": "سيراجع فريقنا هذا التقييم خلال 24 ساعة. يُخفى التقييم الذي يتلقى 3 بلاغات حتى يراجعه الفريق.",
   "reviewReported": "شكراً لك. سيراجع فريقنا هذا التقييم.",
   "reviewAlreadyReported": "لقد أبلغت عن هذا التقييم من قبل.",
-  "reportReviewFailed": "تعذّر الإبلاغ عن التقييم. حاول مرة أخرى."
+  "reportReviewFailed": "تعذّر الإبلاغ عن التقييم. حاول مرة أخرى.",
+  "blockUser": "حظر المستخدم",
+  "blockUserConfirmTitle": "حظر هذا المستخدم؟",
+  "blockUserConfirmMessage": "لن ترى تقييمات هذا المستخدم بعد الآن.",
+  "userBlocked": "تم حظر المستخدم. لن ترى تقييماته بعد الآن.",
+  "blockUserFailed": "تعذّر حظر المستخدم. حاول مرة أخرى.",
+  "blockedUsers": "المستخدمون المحظورون",
+  "blockedUser": "مستخدم محظور",
+  "unblockUser": "إلغاء الحظر",
+  "userUnblocked": "تم إلغاء حظر المستخدم.",
+  "unblockUserFailed": "تعذّر إلغاء حظر المستخدم. حاول مرة أخرى."
 }

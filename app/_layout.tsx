@@ -35,6 +35,7 @@ import { AlertDialogHost } from "@/components/shared/AlertDialogHost";
 import { SignInSheetHost } from "@/auth/SignInSheetHost";
 import { useTokenForegroundRefresh } from "@/auth/useTokenForegroundRefresh";
 import { useClearUserCacheOnLogout } from "@/hooks/queries/useClearUserCacheOnLogout";
+import { useSyncBlockedUsers } from "@/hooks/queries/useSyncBlockedUsers";
 import { Spinner } from "@/components/ui/spinner";
 import { Logo } from "@/components/shared/Logo";
 
@@ -56,6 +57,7 @@ focusManager.setEventListener((handleFocus) => {
 function AppServices() {
   useTokenForegroundRefresh();
   useClearUserCacheOnLogout();
+  useSyncBlockedUsers();
   return null;
 }
 
