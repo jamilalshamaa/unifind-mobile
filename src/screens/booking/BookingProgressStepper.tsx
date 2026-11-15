@@ -8,7 +8,9 @@
  * Upcoming steps show grey border.
  *
  * RTL note: ConnectorLine is a flex sibling (flex:1, height:2) so it naturally
- * mirrors in RTL — no position:absolute left/right hard-coding.
+ * mirrors in RTL — no position:absolute left/right hard-coding. Native layout
+ * stays LTR (src/i18n/language.ts), so in Arabic both rows use row-reverse:
+ * the first step is on the right and the connectors run right to left.
  */
 
 import { View } from "react-native";
@@ -20,6 +22,7 @@ import {
 } from "lucide-react-native";
 import { Text } from "@/components/ui/text";
 import { useColors } from "@/hooks/useColors";
+import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 
 export type StepState = "completed" | "current" | "upcoming";
 
@@ -92,8 +95,10 @@ function ConnectorLine({ completed }: { completed: boolean }) {
 
 export function BookingProgressStepper({ steps }: { steps: BookingStep[] }) {
   const colors = useColors();
+  const { isRtl } = useCustomTranslation();
+  const direction = isRtl ? "row-reverse" : "row";
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+    <View style={{ flexDirection: direction, alignItems: "flex-start" }}>
       {steps.map((step, idx) => {
         const IconComp = STEP_ICONS[idx] ?? CheckCircle;
         const isLast = idx === steps.length - 1;
@@ -105,7 +110,7 @@ export function BookingProgressStepper({ steps }: { steps: BookingStep[] }) {
             style={{ flex: 1, flexDirection: "column", alignItems: "center" }}
           >
             {/* Row: circle + connector (connector is a flex sibling not absolute) */}
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
+            <View style={{ flexDirection: direction, alignItems: "center", width: "100%" }}>
               {/* Spacer before the circle so the circle stays centred in its column */}
               <View style={{ flex: 1 }} />
               <StepCircle state={step.state} IconComp={IconComp} />

@@ -9,7 +9,7 @@
  * §2 changes:
  *   - DollarSign icon removed from the total row.
  *   - Total amount → text-xl font-bold text-foreground.
- *   - Total box: borderLeftWidth:3, borderLeftColor:colors.secondary (turquoise).
+ *   - Total box: 3px turquoise accent on the leading edge (left, right in RTL).
  */
 
 import React from "react";
@@ -36,9 +36,11 @@ export interface PaymentCardData {
 }
 
 export function BookingPaymentCard({ data }: { data: PaymentCardData }) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
   const colors = useColors();
   const hasPromo = data.promocode && data.promocode !== "null";
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
+  const align = isRtl ? "text-right" : "";
 
   const rows = [
     {
@@ -57,54 +59,65 @@ export function BookingPaymentCard({ data }: { data: PaymentCardData }) {
 
   return (
     <View className="bg-card rounded-2xl border border-border p-4 gap-4">
-      <Heading size="sm" className="text-foreground border-b border-border pb-3">
+      <Heading size="sm" className={`text-foreground border-b border-border pb-3 ${align}`}>
         {t("bookingDetail.paymentInfo")}
       </Heading>
 
       <View className="gap-3">
-        {rows.map((row) => (
-          <View key={row.label} className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
-              <row.icon size={16} color={colors.mutedForeground} />
-              <Text className="text-sm text-foreground">{row.label}</Text>
+        {rows.map((r) => (
+          <View key={r.label} className={`${row} items-center justify-between gap-3`}>
+            <View className={`${row} items-center gap-2 shrink`}>
+              <r.icon size={16} color={colors.mutedForeground} />
+              <Text className="text-sm text-foreground shrink" numberOfLines={2}>
+                {r.label}
+              </Text>
             </View>
-            {row.pill ?? <Text className="text-sm text-foreground">{row.value}</Text>}
+            {r.pill ?? (
+              <Text className="text-sm text-foreground shrink" numberOfLines={1}>
+                {r.value}
+              </Text>
+            )}
           </View>
         ))}
 
         {/* Price row */}
-        <View className="flex-row items-center justify-between">
-          <Text className="text-sm text-foreground">{t("bookingDetail.price")}</Text>
-          <Text className="text-sm text-foreground">{data.discountedPriceEvent}</Text>
+        <View className={`${row} items-center justify-between gap-3`}>
+          <Text className="text-sm text-foreground shrink">{t("bookingDetail.price")}</Text>
+          <Text className="text-sm text-foreground" numberOfLines={1}>
+            {data.discountedPriceEvent}
+          </Text>
         </View>
 
         {/* Promo discount */}
         {hasPromo && (
-          <View className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
+          <View className={`${row} items-center justify-between gap-3`}>
+            <View className={`${row} items-center gap-2 shrink`}>
               <Percent size={16} color={colors.primary} />
-              <Text style={{ color: colors.foreground, fontSize: 14 }}>
+              <Text className="text-sm text-foreground shrink" numberOfLines={2}>
                 {t("bookingDetail.promocode")}{data.promoCodeName ? ` (${data.promoCodeName})` : ""}
               </Text>
             </View>
-            <Text style={{ color: colors.foreground, fontSize: 14 }}>-{data.promocode}</Text>
+            <Text className="text-sm text-foreground" numberOfLines={1}>
+              -{data.promocode}
+            </Text>
           </View>
         )}
       </View>
 
-      {/* Total box — §2: borderLeft turquoise accent, no DollarSign icon, text-xl bold */}
+      {/* Total box — turquoise accent on the leading edge (mirrored in RTL) */}
       <View
         className="bg-muted rounded-xl p-3"
-        style={{
-          borderLeftWidth: 3,
-          borderLeftColor: colors.secondary,
-        }}
+        style={
+          isRtl
+            ? { borderRightWidth: 3, borderRightColor: colors.secondary }
+            : { borderLeftWidth: 3, borderLeftColor: colors.secondary }
+        }
       >
-        <View className="flex-row items-center justify-between">
-          <Text className="text-sm font-semibold text-foreground">
+        <View className={`${row} items-center justify-between gap-3`}>
+          <Text className="text-sm font-semibold text-foreground shrink">
             {t("bookingDetail.totalPrice")}
           </Text>
-          <Text className="text-xl font-bold text-foreground">
+          <Text className="text-xl font-bold text-foreground" numberOfLines={1} adjustsFontSizeToFit>
             {data.priceAfterPromoCode || data.price}
           </Text>
         </View>
@@ -112,19 +125,19 @@ export function BookingPaymentCard({ data }: { data: PaymentCardData }) {
 
       {/* Footer */}
       <View className="gap-1 border-t border-border pt-3">
-        <Text className="text-xs text-muted-foreground">
+        <Text className={`text-xs text-muted-foreground ${align}`}>
           {t("bookingDetail.checkTerms")}{" "}
           <Text
-            style={{ color: colors.primary, textDecorationLine: "underline", fontSize: 12 }}
+            className="text-xs text-primary underline"
             onPress={() => showToast(t("common.comingSoon"))}
           >
             {t("bookingDetail.termsAndConditions")}
           </Text>
         </Text>
-        <Text className="text-xs text-muted-foreground">
+        <Text className={`text-xs text-muted-foreground ${align}`}>
           {t("bookingDetail.support")}{" "}
           <Text
-            style={{ color: colors.primary, textDecorationLine: "underline", fontSize: 12 }}
+            className="text-xs text-primary underline"
             onPress={() => Linking.openURL("mailto:info@unifind.online")}
           >
             info@unifind.online

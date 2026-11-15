@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Center } from "@/components/ui/box";
 import { ScreenContainer } from "@/components/shared/ScreenContainer";
+import { ContentColumn } from "@/components/shared/ContentColumn";
 import { AppHeader } from "@/components/shared/AppHeader";
 import { BookingProgressStepper, buildSteps } from "@/screens/booking/BookingProgressStepper";
 import { BookingSessionCard, type SessionData } from "@/screens/booking/BookingSessionCard";
@@ -43,11 +44,11 @@ import { useAsyncResource } from "@/hooks/useAsyncResource";
 
 // ─── Skeleton — content-shaped (§S3: ref+pill, stepper, session, payment) ─────
 
-function DetailSkeleton() {
+function DetailSkeleton({ isRtl }: { isRtl: boolean }) {
   return (
-    <View className="gap-4 p-4">
+    <ContentColumn className="gap-4 p-4">
       {/* Booking ref + status pill */}
-      <View className="flex-row items-center gap-3">
+      <View className={`items-center gap-3 ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
         <Skeleton className="h-6 w-40 bg-muted rounded-lg" />
         <Skeleton className="h-6 w-20 bg-muted rounded-full" />
       </View>
@@ -64,12 +65,20 @@ function DetailSkeleton() {
         </View>
       </View>
 
-      {/* Session card */}
-      <Skeleton className="h-44 bg-muted rounded-2xl" />
+      {/* Session card: image band + title and meta rows */}
+      <View className="bg-card rounded-2xl border border-border overflow-hidden">
+        <Skeleton className="h-[120px] bg-muted rounded-none" />
+        <View className="p-4 gap-3">
+          <Skeleton className="h-5 w-3/4 bg-muted rounded" />
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-8 w-1/2 bg-muted rounded" />
+          ))}
+        </View>
+      </View>
 
       {/* Payment card */}
-      <Skeleton className="h-52 bg-muted rounded-2xl" />
-    </View>
+      <Skeleton className="h-64 bg-muted rounded-2xl" />
+    </ContentColumn>
   );
 }
 
@@ -77,8 +86,8 @@ function DetailSkeleton() {
 
 export default function BookingDetailScreen() {
   const { bookingReference } = useLocalSearchParams<{ bookingReference: string }>();
-  const { t } = useCustomTranslation();
-  const { formatDate, formatCurrency } = useLocalization();
+  const { t, isRtl } = useCustomTranslation();
+  const { formatCurrency } = useLocalization();
   const colors = useColors();
 
   /** Map currency symbol to ISO code for formatCurrency */
@@ -113,7 +122,7 @@ export default function BookingDetailScreen() {
     return (
       <ScreenContainer>
         <AppHeader title={t("bookingDetail.title")} showBack />
-        <DetailSkeleton />
+        <DetailSkeleton isRtl={isRtl} />
       </ScreenContainer>
     );
   }
@@ -182,47 +191,55 @@ export default function BookingDetailScreen() {
       >
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ padding: 16, paddingBottom: 60, gap: 16 }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
           ref={reviewRef}
         >
-          {/* Header: booking ref + status */}
-          <View className="flex-row items-center gap-3 flex-wrap">
-            <Heading size="md" className="text-foreground">
-              {t("bookingDetail.booking")} {bookingReference}
-            </Heading>
-            <StatusPill status={safeStatus} />
-          </View>
-
-          {/* Progress stepper */}
-          <View className="bg-card rounded-2xl border border-border p-4">
-            <BookingProgressStepper steps={steps} />
-          </View>
-
-          {/* Session card */}
-          <BookingSessionCard session={sessionData} />
-
-          {/* Payment card */}
-          <BookingPaymentCard data={paymentData} />
-
-          {/* Notes */}
-          {bookingData.notes ? (
-            <View className="bg-card rounded-2xl border border-border p-4 gap-2">
-              <Text className="text-sm font-semibold text-foreground">{t("bookingDetail.notes")}</Text>
-              <Text className="text-sm text-muted-foreground">{bookingData.notes}</Text>
+          <ContentColumn className="gap-4">
+            {/* Header: booking ref + status */}
+            <View className={`items-center gap-3 flex-wrap ${isRtl ? "flex-row-reverse" : "flex-row"}`}>
+              <Heading size="md" className={`text-foreground shrink ${isRtl ? "text-right" : ""}`}>
+                {t("bookingDetail.booking")} {bookingReference}
+              </Heading>
+              <StatusPill status={safeStatus} />
             </View>
-          ) : null}
 
-          {/* Review section — only for completed */}
-          {isCompleted && (
-            <View nativeID="offeringReviewsID">
-              <Heading size="sm" className="text-foreground mb-3">{t("reviews")}</Heading>
-              <BookingReviewSection
-                offeringContentId={bookingData.offering.offeringContentId}
-                specialistName={bookingData.specialist.name}
-                eventTypeMode={bookingData.eventType.mode}
-              />
+            {/* Progress stepper */}
+            <View className="bg-card rounded-2xl border border-border p-4">
+              <BookingProgressStepper steps={steps} />
             </View>
-          )}
+
+            {/* Session card */}
+            <BookingSessionCard session={sessionData} />
+
+            {/* Payment card */}
+            <BookingPaymentCard data={paymentData} />
+
+            {/* Notes */}
+            {bookingData.notes ? (
+              <View className="bg-card rounded-2xl border border-border p-4 gap-2">
+                <Text className={`text-sm font-semibold text-foreground ${isRtl ? "text-right" : ""}`}>
+                  {t("bookingDetail.notes")}
+                </Text>
+                <Text className={`text-sm text-muted-foreground ${isRtl ? "text-right" : ""}`}>
+                  {bookingData.notes}
+                </Text>
+              </View>
+            ) : null}
+
+            {/* Review section — only for completed */}
+            {isCompleted && (
+              <View nativeID="offeringReviewsID">
+                <Heading size="sm" className={`text-foreground mb-3 ${isRtl ? "text-right" : ""}`}>
+                  {t("reviews")}
+                </Heading>
+                <BookingReviewSection
+                  offeringContentId={bookingData.offering.offeringContentId}
+                  specialistName={bookingData.specialist.name}
+                  eventTypeMode={bookingData.eventType.mode}
+                />
+              </View>
+            )}
+          </ContentColumn>
         </ScrollView>
       </Animated.View>
     </ScreenContainer>
