@@ -48,6 +48,7 @@ import { useOfferingDetail } from "@/hooks/queries/useOfferingDetail";
 import { StickyBookBar } from "@/screens/offering/StickyBookBar";
 import { useScrollToSection } from "@/hooks/useScrollToSection";
 import { showToast } from "@/stores/toastStore";
+import { contentColumnStyle } from "@/config/theme";
 
 // ─── Averages zero-value ──────────────────────────────────────────────────────
 
@@ -169,49 +170,51 @@ export default function OfferingDetailScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {/* 1. Hero */}
-        <OfferingHeroSection
-          offering={strapiOffering}
-          specialists={specialists}
-          rating={averages.averageGeneralRating}
-          nbReviews={averages.totalReviews}
-          isFavorite={currentlyFav}
-          onToggleFavorite={handleToggleFavorite}
-          onBookSeatPress={scrollToSpecialists}
-        />
+        <View style={contentColumnStyle}>
+          {/* 1. Hero */}
+          <OfferingHeroSection
+            offering={strapiOffering}
+            specialists={specialists}
+            rating={averages.averageGeneralRating}
+            nbReviews={averages.totalReviews}
+            isFavorite={currentlyFav}
+            onToggleFavorite={handleToggleFavorite}
+            onBookSeatPress={scrollToSpecialists}
+          />
 
-        {/* 2. Details strip */}
-        <OfferingDetailsStrip
-          locationValue={locationValue}
-          availableOnline={strapiOffering.availableOnline}
-          sessionDuration={nodeOffering.sessionDuration}
-          sessionCount={nodeOffering.sessionCount}
-          hasCertificate={strapiOffering.hasCertificate}
-        />
+          {/* 2. Details strip */}
+          <OfferingDetailsStrip
+            locationValue={locationValue}
+            availableOnline={strapiOffering.availableOnline}
+            sessionDuration={nodeOffering.sessionDuration}
+            sessionCount={nodeOffering.sessionCount}
+            hasCertificate={strapiOffering.hasCertificate}
+          />
 
-        {/* 3. Overview */}
-        <View className="mt-4 gap-4" onLayout={onSectionsLayout}>
-          <OfferingOverviewSection offering={strapiOffering} />
+          {/* 3. Overview */}
+          <View className="mt-4 gap-4" onLayout={onSectionsLayout}>
+            <OfferingOverviewSection offering={strapiOffering} />
 
-          {/* 4. Core Learnings */}
-          <OfferingResultsSection offering={strapiOffering} />
+            {/* 4. Core Learnings */}
+            <OfferingResultsSection offering={strapiOffering} />
 
-          {/* 5. Requirements */}
-          <OfferingRequirementsSection offering={strapiOffering} />
+            {/* 5. Requirements */}
+            <OfferingRequirementsSection offering={strapiOffering} />
 
-          {/* 6. Specialist + booking flow */}
-          <View onLayout={onSpecialistLayout}>
-            <OfferingSpecialistSection nodeOffering={nodeOffering} />
+            {/* 6. Specialist + booking flow */}
+            <View onLayout={onSpecialistLayout}>
+              <OfferingSpecialistSection nodeOffering={nodeOffering} />
+            </View>
+
+            {/* 7. Reviews */}
+            <OfferingReviewsSection
+              strapiId={String(strapiOffering.id)}
+              averages={averages}
+            />
           </View>
 
-          {/* 7. Reviews */}
-          <OfferingReviewsSection
-            strapiId={String(strapiOffering.id)}
-            averages={averages}
-          />
+          <View className="h-8" />
         </View>
-
-        <View className="h-8" />
       </ScrollView>
 
       {/* DESIGN-01: price + Book a Seat stay reachable while scrolling */}
