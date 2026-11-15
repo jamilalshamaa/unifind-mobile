@@ -3,6 +3,17 @@ export const SHADOW_COLOR = "#000000";
 /** Semi-transparent scrim for camera/avatar overlay bands. */
 export const SCRIM_45 = "rgba(0,0,0,0.45)";
 
+/** Max width of the main content column on wide screens (tablets, web).
+ * Phones are narrower, so this has no effect on them. */
+export const CONTENT_MAX_WIDTH = 840;
+/** Style for a content column: full width on phones, centered and capped at
+ * CONTENT_MAX_WIDTH on tablets. */
+export const contentColumnStyle = {
+  width: "100%",
+  maxWidth: CONTENT_MAX_WIDTH,
+  alignSelf: "center",
+} as const;
+
 /** unifind brand palette (mirrors unifind/frontend/tailwind.config.js). */
 export const brand = {
   prussian: "#023055",
