@@ -25,6 +25,7 @@ import { UniversalList } from "@/components/common/UniversalList";
 import { CompareBar } from "@/components/common/CompareBar";
 import { InstitutionCard } from "@/components/cards/InstitutionCard";
 import { ListSkeleton } from "@/components/common/ListSkeleton";
+import { contentColumnStyle } from "@/config/theme";
 import { router } from "expo-router";
 
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
@@ -182,26 +183,27 @@ export default function FindInstitutionsScreen({ subNav: subNavProp, embedded }:
       const docId = inst.documentId;
 
       return (
-        <InstitutionCard
-          key={docId}
-          documentId={docId}
-          name={inst.name || "-"}
-          type={inst.acronym ?? undefined}
-          location={location}
-          description={description}
-          logoSrc={inst.logo?.url}
-          coverSrc={inst.photoCover?.url}
-          fees={fees}
-          rating={inst.ratingStars ?? 0}
-          isFavorite={isFavorite("Institution", docId)}
-          isCompared={isCompared("Institution", docId)}
-          rankings={topRankings}
-          onToggleFavorite={() => toggleFavorite("Institution", docId)}
-          onAddToCompare={() => toggleCompare("Institution", docId)}
-          onPrimaryClick={() =>
-            router.push(`/(main)/institutions/${inst.slug}` as never)
-          }
-        />
+        <View style={contentColumnStyle} key={docId}>
+          <InstitutionCard
+            documentId={docId}
+            name={inst.name || "-"}
+            type={inst.acronym ?? undefined}
+            location={location}
+            description={description}
+            logoSrc={inst.logo?.url}
+            coverSrc={inst.photoCover?.url}
+            fees={fees}
+            rating={inst.ratingStars ?? 0}
+            isFavorite={isFavorite("Institution", docId)}
+            isCompared={isCompared("Institution", docId)}
+            rankings={topRankings}
+            onToggleFavorite={() => toggleFavorite("Institution", docId)}
+            onAddToCompare={() => toggleCompare("Institution", docId)}
+            onPrimaryClick={() =>
+              router.push(`/(main)/institutions/${inst.slug}` as never)
+            }
+          />
+        </View>
       );
     },
     [isFavorite, isCompared, toggleFavorite, toggleCompare, t, formatCurrency]
@@ -221,7 +223,9 @@ export default function FindInstitutionsScreen({ subNav: subNavProp, embedded }:
   if (!filterDataLoaded && (params.level || params.field || params.location)) {
     const skel = (
       <View className="flex-1 pt-4">
-        <ListSkeleton variant="institution" />
+        <View style={contentColumnStyle}>
+          <ListSkeleton variant="institution" />
+        </View>
       </View>
     );
     return embedded ? skel : (
