@@ -123,11 +123,11 @@ export function InstitutionHeroSection({
         }`}
       >
         {/* Main Campus */}
-        <View className={`flex-row items-center gap-1.5 ${isRtl ? "flex-row-reverse" : ""}`}>
+        <View className={`flex-row items-center gap-1.5 shrink ${isRtl ? "flex-row-reverse" : ""}`}>
           <MapPin size={14} color={colors.primary} />
-          <View>
+          <View className={`shrink ${isRtl ? "items-end" : ""}`}>
             <Text className="text-xs text-muted-foreground">{t("main_campus")}</Text>
-            <Text className="text-xs font-semibold text-foreground">{city}</Text>
+            <Text className="text-xs font-semibold text-foreground" numberOfLines={1}>{city}</Text>
           </View>
         </View>
 
@@ -135,10 +135,10 @@ export function InstitutionHeroSection({
         {institution.website ? (
           <Pressable
             onPress={handleWebsite}
-            className={`flex-row items-center gap-1.5 ${isRtl ? "flex-row-reverse" : ""}`}
+            className={`flex-row items-center gap-1.5 shrink ${isRtl ? "flex-row-reverse" : ""}`}
           >
             <Globe size={14} color={colors.primary} />
-            <View>
+            <View className={`shrink ${isRtl ? "items-end" : ""}`}>
               <Text className="text-xs text-muted-foreground">{t("website")}</Text>
               <Text className="text-xs font-semibold text-primary" numberOfLines={1}>
                 {institution.website.replace(/^https?:\/\/(www\.)?/, "")}
@@ -151,10 +151,10 @@ export function InstitutionHeroSection({
         {institution.email ? (
           <Pressable
             onPress={handleEmail}
-            className={`flex-row items-center gap-1.5 ${isRtl ? "flex-row-reverse" : ""}`}
+            className={`flex-row items-center gap-1.5 shrink ${isRtl ? "flex-row-reverse" : ""}`}
           >
             <Mail size={14} color={colors.primary} />
-            <View>
+            <View className={`shrink ${isRtl ? "items-end" : ""}`}>
               <Text className="text-xs text-muted-foreground">{t("email_address")}</Text>
               <Text className="text-xs font-semibold text-primary" numberOfLines={1}>
                 {institution.email}
@@ -164,9 +164,9 @@ export function InstitutionHeroSection({
         ) : null}
 
         {/* Programs count */}
-        <View className={`flex-row items-center gap-1.5 ${isRtl ? "flex-row-reverse" : ""}`}>
+        <View className={`flex-row items-center gap-1.5 shrink ${isRtl ? "flex-row-reverse" : ""}`}>
           <Hash size={14} color={colors.primary} />
-          <View>
+          <View className={`shrink ${isRtl ? "items-end" : ""}`}>
             <Text className="text-xs text-muted-foreground">{t("nb_programs")}</Text>
             <Text className="text-xs font-semibold text-foreground">
               {nbPrograms}+ {t("programs")}
