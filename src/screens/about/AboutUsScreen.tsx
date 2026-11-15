@@ -5,6 +5,10 @@
  * Sections (same order as web): heading · story paragraph + illustration ·
  * second paragraph · UniFind by the numbers · quote · why-us intro · 4 why-us cards.
  * Static content: all copy comes from translations (aboutUs* keys, en + ar).
+ *
+ * Layout: text and cards sit in the centered ContentColumn (tablet, web); the
+ * numbers band stays full-bleed like the web. Why-us cards go 2 per row when
+ * the column is at least 600pt wide, with equal heights per row.
  */
 
 import { Image, ScrollView, View, useWindowDimensions } from "react-native";
@@ -13,6 +17,7 @@ import { Laptop, Lightbulb, Target, Users, type LucideIcon } from "lucide-react-
 import { Text } from "@/components/ui/text";
 import { Heading } from "@/components/ui/heading";
 import { AppHeader } from "@/components/shared/AppHeader";
+import { ContentColumn, CONTENT_MAX_WIDTH } from "@/components/shared/ContentColumn";
 import { IconCircle } from "@/components/shared/IconCircle";
 import { NumbersSection } from "@/screens/home/NumbersSection";
 import { useColors } from "@/hooks/useColors";
@@ -32,14 +37,17 @@ export default function AboutUsScreen() {
   const colors = useColors();
   const align = isRtl ? "text-right" : "text-left";
   const { width: windowWidth } = useWindowDimensions();
-  const imageWidth = windowWidth - 32; // px-4 gutters
+  const columnWidth = Math.min(windowWidth, CONTENT_MAX_WIDTH);
+  const imageWidth = columnWidth - 32; // px-4 gutters
+  const twoColumns = columnWidth >= 600;
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
 
   return (
     <SafeAreaView edges={["top"]} className="flex-1 bg-background">
       <AppHeader title={t("navAboutUs")} showBack />
       <ScrollView testID="about-us-screen" contentContainerStyle={{ paddingBottom: 32 }}>
         {/* Heading + story */}
-        <View className="px-4 pt-6 gap-4">
+        <ContentColumn className="px-4 pt-6 gap-4">
           <Heading size="2xl" className={`text-foreground ${align}`}>
             {t("aboutUsHeading1")} <Heading size="2xl" className="text-secondary">{t("aboutUsHeading2")}</Heading>
           </Heading>
@@ -51,7 +59,7 @@ export default function AboutUsScreen() {
             style={{ width: imageWidth, height: (imageWidth * 652) / 1070 }}
           />
           <Text className={`text-base leading-6 text-foreground ${align}`}>{t("aboutUsParagraph2")}</Text>
-        </View>
+        </ContentColumn>
 
         {/* Numbers */}
         <View className="mt-8">
@@ -59,7 +67,7 @@ export default function AboutUsScreen() {
         </View>
 
         {/* Quote + why us */}
-        <View className="px-4 pt-8 gap-4">
+        <ContentColumn className="px-4 pt-8 gap-4">
           <Heading size="xl" className={`text-foreground ${align}`}>{t("aboutUsWhyUsHeading1")}</Heading>
           <View
             className="rounded-xl bg-muted p-4 gap-2"
@@ -72,11 +80,12 @@ export default function AboutUsScreen() {
           <Heading size="lg" className={`text-foreground ${align}`}>{t("aboutUsWhyUsTitle")}</Heading>
           <Text className={`text-base leading-6 text-muted-foreground ${align}`}>{t("aboutUsWhyUsDescription")}</Text>
 
-          <View className="gap-3">
+          <View className={twoColumns ? `${row} flex-wrap justify-between gap-y-3` : "gap-3"}>
             {WHY_US.map(({ icon: Icon, title, description }) => (
               <View
                 key={title}
-                className={`rounded-2xl border border-border bg-card p-4 gap-3 flex-row ${isRtl ? "flex-row-reverse" : ""}`}
+                className={`rounded-2xl border border-border bg-card p-4 gap-3 ${row}`}
+                style={twoColumns ? { width: "48.8%" } : undefined}
               >
                 <IconCircle size={44}>
                   <Icon color={colors.primary} size={22} />
@@ -88,7 +97,7 @@ export default function AboutUsScreen() {
               </View>
             ))}
           </View>
-        </View>
+        </ContentColumn>
       </ScrollView>
     </SafeAreaView>
   );
