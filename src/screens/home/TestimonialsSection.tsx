@@ -64,37 +64,39 @@ export function TestimonialsSection() {
 
   return (
     <Animated.View style={animStyle}>
-      <View className="pt-7 pb-6 bg-background">
-        <SectionHeader titleKey="studentSay" className="px-4" />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={SNAP_INTERVAL}
-          decelerationRate="fast"
-          snapToAlignment="start"
-          contentContainerStyle={isRtl ? { paddingRight: 16, paddingLeft: 32 } : { paddingLeft: 16, paddingRight: 32 }}
-        >
-          {visibleTestimonials.map((item: TestimonialItem, index: number) => (
-            <TestimonialCard
-              key={index}
-              imageUrl={item.imageUrl}
-              logoUrl={item.logoUrl || undefined}
-              title={item.title}
-              rating={item.rating}
-              testimonial={item.testimonial}
-              userName={item.userName}
-              userAvatar={item.userAvatar}
-              userProgram={item.userProgram}
-              reviewId={item.reviewId}
-              reviewerId={item.reviewerId}
-              onPress={() => {
-                // Detail screen not built yet — give clear feedback so the tap responds.
-                // TODO: navigate when detail screens are built
-                showToast(`${item.title} · ${t("common.comingSoon")}`);
-              }}
-            />
-          ))}
-        </ScrollView>
+      <View className="bg-background">
+        <View className="pt-7 pb-6 w-full max-w-[840px] self-center">
+          <SectionHeader titleKey="studentSay" className="px-4" />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={SNAP_INTERVAL}
+            decelerationRate="fast"
+            snapToAlignment="start"
+            contentContainerStyle={isRtl ? { paddingRight: 16, paddingLeft: 32 } : { paddingLeft: 16, paddingRight: 32 }}
+          >
+            {visibleTestimonials.map((item: TestimonialItem, index: number) => (
+              <TestimonialCard
+                key={index}
+                imageUrl={item.imageUrl}
+                logoUrl={item.logoUrl || undefined}
+                title={item.title}
+                rating={item.rating}
+                testimonial={item.testimonial}
+                userName={item.userName}
+                userAvatar={item.userAvatar}
+                userProgram={item.userProgram}
+                reviewId={item.reviewId}
+                reviewerId={item.reviewerId}
+                onPress={() => {
+                  // Detail screen not built yet — give clear feedback so the tap responds.
+                  // TODO: navigate when detail screens are built
+                  showToast(`${item.title} · ${t("common.comingSoon")}`);
+                }}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </View>
     </Animated.View>
   );
