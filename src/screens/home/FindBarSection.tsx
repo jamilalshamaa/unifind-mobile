@@ -128,78 +128,85 @@ export function FindBarSection({ onLanguageToggle, onProfilePress }: FindBarSect
         className={`absolute -bottom-8 ${isRtl ? "-right-8" : "-left-8"} w-40 h-40 rounded-full bg-turquoise/10`}
       />
 
-      <HomeAppBar onLanguageToggle={onLanguageToggle} onProfilePress={onProfilePress} />
+      {/* Wide screens (tablet / web): content stays in a centred column, the
+          gradient band stays full-bleed. */}
+      <View className="w-full max-w-[840px] self-center">
+        <HomeAppBar onLanguageToggle={onLanguageToggle} onProfilePress={onProfilePress} />
+      </View>
 
-      <Animated.View style={heroStyle} className="px-5 pt-4 pb-8">
-        {/* Headline — balanced vertical spacing */}
-        <View className={`gap-1 mb-6 ${isRtl ? "items-end" : "items-start"}`}>
-          <Text className={`text-white/85 text-sm font-medium tracking-wide ${isRtl ? "text-right" : ""}`}>
-            {t("heroSubtitle")}
-          </Text>
-          <View className={`flex-row flex-wrap items-baseline gap-x-2 ${isRtl ? "flex-row-reverse" : ""}`}>
-            <Heading size="2xl" className="text-white font-black leading-tight">{t("findYour")}</Heading>
-            <Heading size="2xl" className="text-turquoise font-black leading-tight flex-shrink">{dynamicWords[activeTab]}</Heading>
+      <Animated.View style={heroStyle}>
+        <View className="w-full max-w-[840px] self-center px-5 pt-4 pb-8">
+          {/* Headline — balanced vertical spacing */}
+          <View className={`gap-1 mb-6 ${isRtl ? "items-end" : "items-start"}`}>
+            <Text className={`text-white/85 text-sm font-medium tracking-wide ${isRtl ? "text-right" : ""}`}>
+              {t("heroSubtitle")}
+            </Text>
+            <View className={`flex-row flex-wrap items-baseline gap-x-2 ${isRtl ? "flex-row-reverse" : ""}`}>
+              <Heading size="2xl" className="text-white font-black leading-tight">{t("findYour")}</Heading>
+              <Heading size="2xl" className="text-turquoise font-black leading-tight flex-shrink">{dynamicWords[activeTab]}</Heading>
+            </View>
           </View>
-        </View>
 
-        {/* Floating search card — consistent horizontal margin (px-5 matches hero) */}
-        <View
-          className="bg-card rounded-3xl overflow-hidden"
-          style={{ shadowColor: SHADOW_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.22, shadowRadius: 20, elevation: 12 }}
-        >
-          {/* Segmented control — the active segment gets a solid dark pill via an
-              inline backgroundColor (reliable on native). The previous version
-              painted a separately-positioned animated indicator behind white text;
-              when that indicator didn't lay out on native you got white text on the
-              light track (invisible). Inline per-segment background avoids that. */}
+          {/* Floating search card — consistent horizontal margin (px-5 matches hero) */}
           <View
-            className={`bg-muted border border-border mx-4 mt-4 rounded-2xl p-1 flex-row ${isRtl ? "flex-row-reverse" : ""}`}
+            className="bg-card rounded-3xl overflow-hidden"
+            style={{ shadowColor: SHADOW_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.22, shadowRadius: 20, elevation: 12 }}
           >
-            {displayTabs.map(({ key, label, Icon }) => {
-              const isActive = activeTab === key;
-              return (
-                <Pressable
-                  key={key}
-                  onPress={() => handleTabChange(key)}
-                  accessibilityRole="tab"
-                  accessibilityState={{ selected: isActive }}
-                  accessibilityLabel={label}
-                  testID={`findbar-tab-${key}`}
-                  style={{
-                    backgroundColor: isActive ? colors.primary : "transparent",
-                    borderRadius: 14,
-                  }}
-                  className="flex-1 flex-row items-center justify-center gap-1.5 py-3 px-1 min-h-[44px]"
-                >
-                  <Icon
-                    size={13}
-                    color={isActive ? colors.primaryForeground : colors.foreground}
-                    strokeWidth={isActive ? 2.5 : 2.25}
-                  />
-                  <Text
-                    className={`text-xs font-semibold ${isActive ? "text-primary-foreground" : "text-foreground"}`}
-                    numberOfLines={1}
+            {/* Segmented control — the active segment gets a solid dark pill via an
+                inline backgroundColor (reliable on native). The previous version
+                painted a separately-positioned animated indicator behind white text;
+                when that indicator didn't lay out on native you got white text on the
+                light track (invisible). Inline per-segment background avoids that. */}
+            <View
+              className={`bg-muted border border-border mx-4 mt-4 rounded-2xl p-1 flex-row ${isRtl ? "flex-row-reverse" : ""}`}
+            >
+              {displayTabs.map(({ key, label, Icon }) => {
+                const isActive = activeTab === key;
+                return (
+                  <Pressable
+                    key={key}
+                    onPress={() => handleTabChange(key)}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected: isActive }}
+                    accessibilityLabel={label}
+                    testID={`findbar-tab-${key}`}
+                    style={{
+                      backgroundColor: isActive ? colors.primary : "transparent",
+                      borderRadius: 14,
+                    }}
+                    className="flex-1 flex-row items-center justify-center gap-1.5 py-3 px-1 min-h-[44px]"
                   >
-                    {label}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
+                    {/* The label shrinks and truncates on 320pt phones; the icon keeps its size. */}
+                    <Icon
+                      size={13}
+                      color={isActive ? colors.primaryForeground : colors.foreground}
+                      strokeWidth={isActive ? 2.5 : 2.25}
+                    />
+                    <Text
+                      className={`text-xs font-semibold flex-shrink ${isActive ? "text-primary-foreground" : "text-foreground"}`}
+                      numberOfLines={1}
+                    >
+                      {label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
-          {/* Filter fields — generous padding + gap so the segmented control,
-              each field, and the Find button breathe (no cramped rows). */}
-          <View style={{ padding: 16, paddingTop: 16, gap: 14 }}>
-            <FindBarFilters
-              activeTab={activeTab}
-              programValues={programValues}
-              institutionValues={institutionValues}
-              offeringValues={offeringValues}
-              onProgramChange={(v) => setProgramValues((s) => ({ ...s, ...v }))}
-              onInstitutionChange={(v) => setInstitutionValues((s) => ({ ...s, ...v }))}
-              onOfferingChange={(v) => setOfferingValues((s) => ({ ...s, ...v }))}
-            />
-            <FindButton onPress={handleFind} label={t("find")} />
+            {/* Filter fields — generous padding + gap so the segmented control,
+                each field, and the Find button breathe (no cramped rows). */}
+            <View style={{ padding: 16, paddingTop: 16, gap: 14 }}>
+              <FindBarFilters
+                activeTab={activeTab}
+                programValues={programValues}
+                institutionValues={institutionValues}
+                offeringValues={offeringValues}
+                onProgramChange={(v) => setProgramValues((s) => ({ ...s, ...v }))}
+                onInstitutionChange={(v) => setInstitutionValues((s) => ({ ...s, ...v }))}
+                onOfferingChange={(v) => setOfferingValues((s) => ({ ...s, ...v }))}
+              />
+              <FindButton onPress={handleFind} label={t("find")} />
+            </View>
           </View>
         </View>
       </Animated.View>

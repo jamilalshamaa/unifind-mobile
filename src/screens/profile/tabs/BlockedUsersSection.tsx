@@ -46,7 +46,10 @@ export function BlockedUsersSection() {
           key={id}
           className={`flex-row items-center justify-between gap-3 ${isRtl ? "flex-row-reverse" : ""}`}
         >
-          <Text className="text-sm text-foreground flex-1">
+          <Text
+            className={`text-sm text-foreground flex-1 ${isRtl ? "text-right" : ""}`}
+            numberOfLines={1}
+          >
             {t("blockedUser")} {i + 1}
           </Text>
           <Button

@@ -11,7 +11,7 @@
  */
 
 import { useEffect } from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, useWindowDimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -122,6 +122,7 @@ function GuideCard({
   ctaStyle,
   onCta,
   animOffset,
+  inRow = false,
 }: {
   steps: GuideStep[];
   trackLabelKey: string;
@@ -129,6 +130,8 @@ function GuideCard({
   ctaStyle: "primary" | "outline";
   onCta: () => void;
   animOffset: number;
+  /** Side-by-side layout (tablet): the card fills its column and stretches to the row height. */
+  inRow?: boolean;
 }) {
   const { t, isRtl } = useCustomTranslation();
   const colors = useColors();
@@ -146,8 +149,10 @@ function GuideCard({
   }, []);
 
   return (
-    <Animated.View style={style} className="w-full">
-      <View className="bg-card rounded-2xl p-4" style={{ elevation: 2, shadowColor: SHADOW_COLOR, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 }}>
+    // Real styles (not className) on the reanimated view: NativeWind classes do
+    // not reliably apply to Animated.View (see NumbersSection).
+    <Animated.View style={[style, inRow ? { flex: 1 } : { width: "100%" }]}>
+      <View className="bg-card rounded-2xl p-4" style={{ flexGrow: inRow ? 1 : 0, elevation: 2, shadowColor: SHADOW_COLOR, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 }}>
         {/* Track label */}
         <Text
           className={`text-xs font-bold text-foreground uppercase tracking-wider mb-3 ${isRtl ? "text-right" : ""}`}
@@ -159,6 +164,9 @@ function GuideCard({
           <GuideStepRow key={step.titleKey} step={step} index={i} />
         ))}
 
+        {/* Spacer: in a row of cards the CTAs line up at the bottom edge. */}
+        <View className="flex-1" />
+
         {/* CTA */}
         {ctaStyle === "primary" ? (
           /* Gradient primary: Animated.View driven by usePressScale, mirrors FindButton */
@@ -167,16 +175,18 @@ function GuideCard({
               colors={[colors.primary, colors.secondary]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+              style={{ flex: 1 }}
             >
+              {/* The Pressable fills the whole 44pt button, not only the label. */}
               <Pressable
                 onPress={onCta}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 accessibilityRole="button"
-                style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: 16, paddingVertical: 10 }}
+                accessibilityLabel={ctaLabel}
+                style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 16 }}
               >
-                <Text className="text-white font-bold text-sm">{ctaLabel}</Text>
+                <Text className="text-white font-bold text-sm" numberOfLines={1}>{ctaLabel}</Text>
               </Pressable>
             </GradientView>
           </Animated.View>
@@ -196,30 +206,41 @@ function GuideCard({
 }
 
 export function GuideSection({ onFindProgram, onDiscoverGrowth }: GuideSectionProps) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
+  // Tablets / wide windows: the two tracks sit side by side with equal heights.
+  const { width } = useWindowDimensions();
+  const twoColumns = width >= 720;
+  const rowDirection = isRtl ? "row-reverse" : "row";
 
   return (
     <View className="pt-12 pb-10 px-4 bg-background">
-      <SectionHeader titleKey="guidesYou" />
+      <View className="w-full max-w-[840px] self-center">
+        <SectionHeader titleKey="guidesYou" />
 
-      {/* Two full-width stacked cards */}
-      <View className="gap-4">
-        <GuideCard
-          steps={PROGRAM_STEPS}
-          trackLabelKey="guideProgramTrack"
-          ctaLabel={t("btnFindProgram")}
-          ctaStyle="primary"
-          onCta={onFindProgram}
-          animOffset={0}
-        />
-        <GuideCard
-          steps={GROWTH_STEPS}
-          trackLabelKey="guideGrowthTrack"
-          ctaLabel={t("btnDiscoverGrowth")}
-          ctaStyle="outline"
-          onCta={onDiscoverGrowth}
-          animOffset={120}
-        />
+        {/* Phones: two full-width stacked cards. Wide screens: two columns. */}
+        <View
+          className="gap-4"
+          style={twoColumns ? { flexDirection: rowDirection, alignItems: "stretch" } : undefined}
+        >
+          <GuideCard
+            steps={PROGRAM_STEPS}
+            trackLabelKey="guideProgramTrack"
+            ctaLabel={t("btnFindProgram")}
+            ctaStyle="primary"
+            onCta={onFindProgram}
+            animOffset={0}
+            inRow={twoColumns}
+          />
+          <GuideCard
+            steps={GROWTH_STEPS}
+            trackLabelKey="guideGrowthTrack"
+            ctaLabel={t("btnDiscoverGrowth")}
+            ctaStyle="outline"
+            onCta={onDiscoverGrowth}
+            animOffset={120}
+            inRow={twoColumns}
+          />
+        </View>
       </View>
     </View>
   );
