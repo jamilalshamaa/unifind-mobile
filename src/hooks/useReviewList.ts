@@ -27,6 +27,8 @@ import type { ReviewItem } from "@/components/shared/ReviewSection";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type RawReview = {
+  _id?: string;
+  reviewer?: string;
   generalRating: number;
   ratings: {
     educationQuality?: number;
@@ -89,6 +91,8 @@ export function useReviewList(
             : "";
 
         return {
+          id: rev._id,
+          reviewerId: rev.reviewer,
           generalRating: rev.generalRating ?? 0,
           date: rev.createdAt,
           comment: rev.comment,

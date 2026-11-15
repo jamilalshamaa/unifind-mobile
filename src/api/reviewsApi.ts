@@ -9,6 +9,7 @@
  *   GET  /reviews/university/:id/average-rating → avg rating for institution
  *   GET  /reviews/user/offering/:offeringContentId → check if already reviewed
  *   POST /reviews                             → create a review
+ *   POST /reviews/:id/report                  → report a review
  */
 
 import { nodeApi } from "@/api/nodeApi";
@@ -178,6 +179,12 @@ export const reviewsApi = {
     }
   },
 
+  /** POST /reviews/:id/report — report a review of another user.
+   * The backend answers 409 when this user already reported the review. */
+  async reportReview(id: string, reason?: string): Promise<void> {
+    await nodeApi.post(`/reviews/${id}/report`, reason ? { reason } : {});
+  },
+
   /** POST /reviews — create a review */
   async createReview(dto: CreateReviewDto): Promise<{ message: string }> {
     const res = await nodeApi.post<{ message: string }>("/reviews", dto);
@@ -252,6 +259,8 @@ export const reviewsApi = {
     limit = 5
   ): Promise<{
     reviews: Array<{
+      _id?: string;
+      reviewer?: string;
       generalRating: number;
       ratings: {
         educationQuality?: number;

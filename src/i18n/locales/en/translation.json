@@ -719,5 +719,11 @@
   "languageNameEn": "English",
   "languageNameAr": "العربية",
   "viewMore": "View details",
-  "invalidEmail": "Please enter a valid email address."
+  "invalidEmail": "Please enter a valid email address.",
+  "reportReview": "Report",
+  "reportReviewConfirmTitle": "Report this review?",
+  "reportReviewConfirmMessage": "Our team will check this review within 24 hours. A review with 3 reports is hidden until the team checks it.",
+  "reviewReported": "Thank you. Our team will check this review.",
+  "reviewAlreadyReported": "You already reported this review.",
+  "reportReviewFailed": "Could not report the review. Try again."
 }

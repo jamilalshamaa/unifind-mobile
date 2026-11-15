@@ -80,6 +80,8 @@ export function TestimonialsSection() {
               userName={item.userName}
               userAvatar={item.userAvatar}
               userProgram={item.userProgram}
+              reviewId={item.reviewId}
+              reviewerId={item.reviewerId}
               onPress={() => {
                 // Detail screen not built yet — give clear feedback so the tap responds.
                 // TODO: navigate when detail screens are built
