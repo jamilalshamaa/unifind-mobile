@@ -9,10 +9,9 @@
  */
 
 import { useState } from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, Platform } from "react-native";
 import { Trash2, Tag } from "lucide-react-native";
 import { Text } from "@/components/ui/text";
-import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import { FormControl, FormControlError, FormControlErrorText } from "@/components/ui/form-control";
@@ -23,6 +22,9 @@ import { useColors } from "@/hooks/useColors";
 import { promoCodeApi, type AppliedPromo } from "@/api/promoCodeApi";
 import { showToast } from "@/stores/toastStore";
 import type { CheckoutBooking } from "@/api/bookingsApi";
+
+/** "monospace" is not a font family on iOS; Menlo is its built-in monospace. */
+const MONO_FONT = Platform.select({ ios: "Menlo", default: "monospace" });
 
 interface PromoBlockProps {
   booking: CheckoutBooking;
@@ -42,9 +44,11 @@ export function PromoBlock({
   onPromoApplied,
   onPromoRemoved,
 }: PromoBlockProps) {
-  const { t } = useCustomTranslation();
+  const { t, isRtl } = useCustomTranslation();
   const { formatCurrency } = useLocalization();
   const colors = useColors();
+  const row = isRtl ? "flex-row-reverse" : "flex-row";
+  const align = isRtl ? "text-right" : "";
 
   const [code, setCode] = useState("");
   const [applying, setApplying] = useState(false);
@@ -121,28 +125,26 @@ export function PromoBlock({
   if (hasActivePromo) {
     return (
       <View
-        className="bg-lightgreen rounded-xl border border-border px-4 py-3"
+        className="bg-lightgreen rounded-2xl border border-border px-4 py-3"
       >
-        <View className="flex-row items-center justify-between">
-          <View className="gap-1">
-            <Text className="text-sm font-semibold text-foreground">
+        <View className={`${row} items-center justify-between gap-3`}>
+          <View className={`gap-1 shrink ${isRtl ? "items-end" : "items-start"}`}>
+            <Text className={`text-sm font-semibold text-foreground ${align}`}>
               {t("promo")}
             </Text>
-            <View
-              style={{ backgroundColor: colors.primary }}
-              className="rounded-md px-2 py-0.5 self-start"
-            >
+            <View className="rounded-md px-2 py-0.5 bg-primary">
               <Text
-                style={{ color: colors.secondary, fontFamily: "monospace" }}
+                style={{ color: colors.secondary, fontFamily: MONO_FONT }}
                 className="text-xs font-bold uppercase tracking-wider"
+                numberOfLines={1}
               >
                 {activePromoCode}
               </Text>
             </View>
           </View>
 
-          <View className="flex-row items-center gap-3">
-            <Text className="text-base font-bold text-foreground">
+          <View className={`${row} items-center gap-2`}>
+            <Text className="text-base font-bold text-foreground" numberOfLines={1}>
               -{formatCurrency(activeDiscountAmount, activeCurrencyCode)}
             </Text>
             <Pressable
@@ -163,12 +165,12 @@ export function PromoBlock({
 
   // Input form
   return (
-    <View className="bg-card rounded-xl border border-border p-4 gap-3">
-      <Text className="text-sm font-semibold text-foreground">
+    <View className="bg-card rounded-2xl border border-border p-4 gap-3">
+      <Text className={`text-sm font-semibold text-foreground ${align}`}>
         {t("promo_code")}
       </Text>
       <FormControl isInvalid={!!error}>
-        <View className="flex-row gap-2 items-start">
+        <View className={`${row} gap-2 items-start`}>
           <View className="flex-1">
             <Input>
               <InputField
@@ -181,6 +183,7 @@ export function PromoBlock({
                 autoCapitalize="characters"
                 returnKeyType="done"
                 onSubmitEditing={handleApply}
+                style={{ textAlign: isRtl ? "right" : "left" }}
               />
             </Input>
             {!!error && (

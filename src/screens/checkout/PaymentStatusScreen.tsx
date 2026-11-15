@@ -25,6 +25,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { ScreenContainer } from "@/components/shared/ScreenContainer";
 import { AppHeader } from "@/components/shared/AppHeader";
+import { ContentColumn, NARROW_MAX_WIDTH } from "@/components/shared/ContentColumn";
 import { useCustomTranslation } from "@/hooks/useCustomTranslation";
 import { useColors } from "@/hooks/useColors";
 
@@ -56,9 +57,12 @@ export default function PaymentStatusScreen() {
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer bottomInset>
       <AppHeader title={isSuccess ? t("paymentSuccessTitle") : t("paymentFailedTitle")} />
-      <View className="flex-1 items-center justify-center px-8 gap-6">
+      <ContentColumn
+        maxWidth={NARROW_MAX_WIDTH}
+        className="flex-1 items-center justify-center px-8 gap-6"
+      >
         {/* Icon — §2: success uses colors.secondary (turquoise), failure uses destructive */}
         {isSuccess ? (
           <CheckCircle size={96} color={colors.secondary} strokeWidth={1.5} />
@@ -94,7 +98,7 @@ export default function PaymentStatusScreen() {
           onPress={handleAction}
           className="w-full"
         />
-      </View>
+      </ContentColumn>
     </ScreenContainer>
   );
 }
